@@ -6,6 +6,8 @@ gem 'rails', '3.0.1'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'sqlite3-ruby', :require => 'sqlite3'
+gem 'devise', '1.1.3'
+gem 'omniauth', '0.1.5'  
 
 # Use unicorn as the web server
 # gem 'unicorn'
@@ -30,7 +32,7 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 # end
 
 
-group :test do
+group :test, :development do
   gem 'rspec-rails'
   gem 'cucumber-rails'
   # use capybara instead of webrat
