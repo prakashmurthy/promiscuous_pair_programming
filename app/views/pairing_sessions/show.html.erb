@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Description:</b>
+  <%= @pairing_session.description %>
+</p>
+
+<p>
+  <b>Date:</b>
+  <%= @pairing_session.date %>
+</p>
+
+
+<%= link_to 'Edit', edit_pairing_session_path(@pairing_session) %> |
+<%= link_to 'Back', pairing_sessions_path %>

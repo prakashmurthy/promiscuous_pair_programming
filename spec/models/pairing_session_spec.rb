@@ -1,5 +1,5 @@
 require 'spec_helper'
 
-describe User do
+describe PairingSession do
 
 end

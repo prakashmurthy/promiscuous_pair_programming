@@ -7,7 +7,8 @@ gem 'rails', '3.0.1'
 
 gem 'sqlite3-ruby', :require => 'sqlite3'
 gem 'devise', '1.1.3'
-gem 'omniauth', '0.1.5'  
+gem 'omniauth', '0.1.5'
+gem "escape_utils", '0.1.9'
 
 # Use unicorn as the web server
 # gem 'unicorn'

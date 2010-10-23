@@ -10,7 +10,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101023164650) do
+ActiveRecord::Schema.define(:version => 20101023200415) do
+
+  create_table "pairing_sessions", :force => true do |t|
+    t.string   "description"
+    t.datetime "date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false

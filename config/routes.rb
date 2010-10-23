@@ -1,4 +1,6 @@
 PromiscuousPairProgramming::Application.routes.draw do
+  resources :pairing_sessions
+
   get "welcome/index"
 
   devise_for :users
