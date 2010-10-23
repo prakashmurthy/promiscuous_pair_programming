@@ -3,6 +3,13 @@ Feature: Managing pairing sessions
   As a logged in user
   I want to be able to manage my pairing sessions.
 
+  Scenario: Viewing my pairing sessions
+    Given a logged in user exists
+    And a pairing session exists with owner: the user, description: "Patch Active Record"
+    When I go to the root page
+    And I follow "My Sessions" within the navigation
+    Then I should see "Patch Active Record" within my pairing sessions
+
   Scenario: Create a new pairing session
     Given a logged in user exists
     When I follow "New Pairing session"
