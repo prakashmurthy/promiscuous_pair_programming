@@ -35,6 +35,8 @@ gem 'omniauth', '0.1.5'
 group :test, :development do
   gem 'rspec-rails'
   gem 'cucumber-rails'
+  gem 'pickle'
+  # capybara 0.4.0 doesn't play nicely with our version of cucumber/web_steps.rb
   gem 'capybara', '0.3.9'
   gem 'launchy' # So you can do Then show me the page
   gem 'thin' # this will speed up your cucumber @javascript tests by a lot

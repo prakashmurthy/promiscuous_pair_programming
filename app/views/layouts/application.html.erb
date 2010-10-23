@@ -8,7 +8,8 @@
 </head>
 <body>
 <div id="account_management">
-  <%= link_to "Create Account", new_user_registration_path %>
+  <%= link_to "Create Account", new_user_registration_path %> or
+  <%= link_to "Sign in", new_user_session_path %>
 </div>
 
 <% if current_user %>
