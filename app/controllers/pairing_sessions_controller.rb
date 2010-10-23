@@ -63,7 +63,8 @@ class PairingSessionsController < ApplicationController
     @pairing_session.destroy
 
     respond_to do |format|
-      format.html { redirect_to(pairing_sessions_url) }
+
+      format.html { redirect_to(pairing_sessions_url, :notice => 'Pairing session was successfully deleted.') }
     end
   end
 end
