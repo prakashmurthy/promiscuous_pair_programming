@@ -21,8 +21,8 @@ Feature: Managing pairing sessions
     And I should see "Work on RSpec bugs" within my pairing sessions
 
   Scenario: Delete a pairing session
-    Given a pairing session exists
-    And a logged in user exists
+    Given a logged in user exists
+    And a pairing session exists with owner: the user
     And I am on the pairing sessions page
     When I follow "Delete" within my pairing sessions
     Then I should see "Pairing session was successfully deleted."
