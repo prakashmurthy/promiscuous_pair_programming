@@ -7,6 +7,15 @@
   <%= csrf_meta_tag %>
 </head>
 <body>
+<div id="account_management">
+  <%= link_to "Create Account", new_user_registration_path %>
+</div>
+
+<% if current_user %>
+<div id="welcome">
+  Hello <%= current_user.email %>
+</div>
+<% end %>
 
 <div id="flashes">
   <p class="notice"><%= notice %></p>

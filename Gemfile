@@ -35,10 +35,7 @@ gem 'omniauth', '0.1.5'
 group :test, :development do
   gem 'rspec-rails'
   gem 'cucumber-rails'
-  # use capybara instead of webrat
-  # run rails g cucumber:install --capybara
-  # to generate cucumber config for capybara
-  gem 'capybara'
+  gem 'capybara', '0.3.9'
   gem 'launchy' # So you can do Then show me the page
   gem 'thin' # this will speed up your cucumber @javascript tests by a lot
 #  gem "factory_girl"
