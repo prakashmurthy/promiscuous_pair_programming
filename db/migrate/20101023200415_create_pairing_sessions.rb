@@ -2,6 +2,7 @@ class CreatePairingSessions < ActiveRecord::Migration
   def self.up
     create_table :pairing_sessions do |t|
       t.string :description
+      t.integer :owner_id
       t.datetime :date
 
       t.timestamps

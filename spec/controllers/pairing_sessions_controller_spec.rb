@@ -8,11 +8,18 @@ describe PairingSessionsController do
     end
   end
 
+  def mock_user(stubs={})
+    (@mock_user ||= mock_model(User).as_null_object).tap do |user|
+      user.stub(stubs) unless stubs.empty?
+    end
+  end
+
   describe "GET index" do
-    it "assigns all pairing_sessions as @pairing_sessions" do
-      PairingSession.stub(:all) { [mock_pairing_session] }
+    it "assigns my pairing_sessions as @pairing_sessions" do
+      expected = [mock_pairing_session]
+      @controller.stub(:current_user){mock_user(:pairing_sessions => expected)}
       get :index
-      assigns(:pairing_sessions).should eq([mock_pairing_session])
+      assigns(:pairing_sessions).should eq(expected)
     end
   end
 

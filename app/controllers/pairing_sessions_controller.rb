@@ -1,7 +1,7 @@
 class PairingSessionsController < ApplicationController
   # GET /pairing_sessions
   def index
-    @pairing_sessions = PairingSession.all
+    @pairing_sessions = current_user.pairing_sessions
 
     respond_to do |format|
       format.html # index.html.erb
@@ -34,6 +34,7 @@ class PairingSessionsController < ApplicationController
   # POST /pairing_sessions
   def create
     @pairing_session = PairingSession.new(params[:pairing_session])
+    @pairing_session.owner = current_user
 
     respond_to do |format|
       if @pairing_session.save

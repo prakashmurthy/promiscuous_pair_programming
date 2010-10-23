@@ -14,6 +14,7 @@ ActiveRecord::Schema.define(:version => 20101023200415) do
 
   create_table "pairing_sessions", :force => true do |t|
     t.string   "description"
+    t.integer  "owner_id"
     t.datetime "date"
     t.datetime "created_at"
     t.datetime "updated_at"
