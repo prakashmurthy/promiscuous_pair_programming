@@ -28,12 +28,8 @@ gem "escape_utils", '0.1.9'
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
 # and rake tasks are available in development mode:
-# group :development, :test do
-#   gem 'webrat'
-# end
-
-
 group :test, :development do
+  gem 'rails3-generators'
   gem 'rspec-rails'
   gem 'cucumber-rails'
   gem 'pickle'

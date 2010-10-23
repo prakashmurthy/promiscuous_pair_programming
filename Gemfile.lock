@@ -148,6 +148,7 @@ GEM
       activesupport (= 3.0.1)
       bundler (~> 1.0.0)
       railties (= 3.0.1)
+    rails3-generators (0.14.0)
     railties (3.0.1)
       actionpack (= 3.0.1)
       activesupport (= 3.0.1)
@@ -205,6 +206,7 @@ DEPENDENCIES
   omniauth (= 0.1.5)
   pickle
   rails (= 3.0.1)
+  rails3-generators
   rspec-rails
   sqlite3-ruby
   thin

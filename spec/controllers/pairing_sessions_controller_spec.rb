@@ -14,6 +14,10 @@ describe PairingSessionsController do
     end
   end
 
+  before(:each) do
+    @controller.stub(:current_user){mock_user()}
+  end
+
   describe "GET index" do
     it "assigns my pairing_sessions as @pairing_sessions" do
       expected = [mock_pairing_session]
