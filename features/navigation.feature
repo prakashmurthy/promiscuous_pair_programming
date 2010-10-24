@@ -1,3 +1,4 @@
+@now
 Feature: Navigation
   In order to provide proper navigation hints to users
   As a website
@@ -9,3 +10,13 @@ Feature: Navigation
     Then I should not see the navigation area
     And I should see "Create an account"
     And I should see "Sign in"
+
+  Scenario: A logged in user should see the navigation area
+    and the logout link
+    but should not see create an account or Log in
+    Given a logged in user exists
+    When I go to the root page
+    Then I should see the navigation area
+    And I should not see "Create an account"
+    And I should not see "Sign in"
+    And I should see "Sign out"
