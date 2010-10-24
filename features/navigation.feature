@@ -1,4 +1,3 @@
-@now
 Feature: Navigation
   In order to provide proper navigation hints to users
   As a website

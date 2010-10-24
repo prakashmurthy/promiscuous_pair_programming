@@ -10,7 +10,7 @@
 
 <% if current_user %>
 <div id="account_management">
-  <%= link_to "Sign out", user_session_path, :method => :delete %>
+  <%= link_to "Sign out", destroy_user_session_path %>
 </div>
 <div id="welcome">
   Hello <%= current_user.email %>

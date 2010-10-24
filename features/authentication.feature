@@ -12,6 +12,11 @@ Feature: Logging in and logging out
     And I press "Sign in"
     Then I should see "Hello bob@test.com"
     And I should see "Login successful."
+@now
+  Scenario: Log out
+    Given a logged in user exists
+    When I follow "Sign out"
+    Then I should see "Signed out successfully."
 
   Scenario: Log in via Twitter if I am new to the site and not logged into Twitter
 
