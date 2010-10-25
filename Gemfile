@@ -10,6 +10,7 @@ gem "escape_utils", '0.1.9'
 # put test-only gems in this group so their generators
 # and rake tasks are available in development mode:
 group :test, :development do
+  gem "mongrel", ">= 1.2.0.pre2" # use mongrel instead of webrick for development
   gem 'heroku'
   gem 'rails3-generators'
   gem 'rspec-rails'
