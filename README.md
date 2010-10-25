@@ -3,9 +3,9 @@
 PromiscuousPairProgramming.com (PPP.com for short) is a place where people can make "random" hookups
 to practice pair programming.  We are still fleshing out the site and are looking for both
 suggestions as well as development help to make the site the one stop shop for people
-looking to practice pair programming, regardless of gender, nationality, sex or programming language.
+looking to practice pair programming, regardless of age, expertise level, gender, nationality, or programming language.
 
-The name itself is inspired by [Chad Fowler](http://twitter.com/chadfowler)'s [interpretation of the message](http://twitter.com/chadfowler/status/26760442153) conveyed by [Aaron Patterson](http://twitter.com/tenderlove) during his keynote at [Mountain.rb conference](http://mountainrb.com/)
+The name - and the concept - is inspired by [Chad Fowler](http://twitter.com/chadfowler)'s [interpretation of the message](http://twitter.com/chadfowler/status/26760442153) conveyed by [Aaron Patterson](http://twitter.com/tenderlove) during his keynote at [Mountain.rb conference](http://mountainrb.com/)
 
 # Contributing
 
