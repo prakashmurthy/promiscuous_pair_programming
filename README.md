@@ -1,7 +1,7 @@
 # Purpose of this site
 
 PromiscuousPairProgramming.com (PPP.com for short) is a place where people can make "random" hookups
-to practice pair programming.  We are still fleshing out the site and are looking for both
+to practice pair programming.  We are still fleshing out the site and are looking for both functionality
 suggestions as well as development help to make the site the one stop shop for people
 looking to practice pair programming, regardless of age, expertise level, gender, nationality, or programming language.
 
@@ -21,10 +21,17 @@ Optimally you would use the [Given...When...Then](http://github.com/aslakhelleso
 
 ## Development help
 
-1. Install RVM
-2. Fork the repo
-3. Do the work in your fork.
-4. Submit a pull request.
+1. Install RVM.
+2. Start a Tracker story to work on.  If there isn't a Tracker story, then please create one following the above advice and start it.  This will allow
+all to keep track of what people are working on and what needs to be accepted.
+3. Fork the repo and create a topic branch.
+4. Write a Cucumber feature/scenario and/or RSpec test. Functionality without tests are frowned upon.
+5. Watch it/them go red.
+6. Write code to make it go green.
+7. Refactor if you need to.
+8. Make sure you haven't broken any of the other tests.
+9. Commit your work...topic branches are a bonus.
+10. Submit a pull request.
 
 Yes there is something I'm sure I've forgotten so feel free to make changes to this document.
 
