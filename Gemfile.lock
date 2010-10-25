@@ -214,7 +214,7 @@ DEPENDENCIES
   heroku
   launchy
   omniauth (= 0.1.5)
-  pg
+  pg (= 0.9.0)
   pickle
   rails (= 3.0.1)
   rails3-generators
