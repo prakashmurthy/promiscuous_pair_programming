@@ -37,7 +37,7 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: promiscuous_pair_programming_development
+  database: promiscuous_pair_programming_test
   pool: 5
   username: rails
   password: password
