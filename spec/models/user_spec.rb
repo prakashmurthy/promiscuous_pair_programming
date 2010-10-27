@@ -1,4 +1,4 @@
-require 'spec_helper'
+require File.expand_path('../../spec_helper', __FILE__)
 
 describe User do
 
@@ -9,12 +9,9 @@ describe User do
   end
 
   it "should have many pairing sessions" do
-    @pairing_session = Factory.build(:pairing_session)
-    subject.pairing_sessions << @pairing_session
-    subject.save!
-    subject.reload
+    user            = Factory.create(:user)
+    pairing_session = Factory.create(:pairing_session, :owner => user)
 
-    subject.pairing_sessions.should eq([@pairing_session])
-
+    user.pairing_sessions.should == [pairing_session]
   end
 end

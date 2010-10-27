@@ -2,5 +2,7 @@
 
 Factory.define :pairing_session do |f|
   f.description "Fixing RSpec bugs"
-  f.date "2010-10-23 14:04:15"
+  f.start_at 1.day.from_now
+  f.end_at 2.day.from_now
+  f.association :owner, :factory => :user
 end

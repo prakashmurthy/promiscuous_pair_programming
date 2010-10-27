@@ -19,11 +19,12 @@ Feature: Managing pairing sessions
     And a pairing session exists with owner: user: "another user", description: "Help fix a bug"
     And a logged in user exists
     When I follow "New Pairing session"
-    And I fill in "Date" with "11/10/2010"
+    And I fill in "Start at" with "11/11/2010 10:00 AM"
+	And I fill in "End at" with "11/11/2010 1:00 PM"
     And I fill in "Description" with "Work on RSpec bugs"
     And I press "Create Pairing session"
     Then I should see "Pairing session was successfully created."
-    And I should see "11/10/2010" within my pairing sessions
+    And I should see "11/11/2010" within my pairing sessions
     And I should see "Work on RSpec bugs" within my pairing sessions
     And I should not see "Help fix a bug"
 
