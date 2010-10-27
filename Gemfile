@@ -20,4 +20,5 @@ group :test, :development do
   gem 'launchy' # So you can do Then show me the page
   gem 'thin' # this will speed up your cucumber @javascript tests by a lot
   gem 'factory_girl_rails', :git => 'git://github.com/msgehard/factory_girl_rails.git'
+  gem 'database_cleaner'
 end

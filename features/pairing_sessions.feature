@@ -36,3 +36,14 @@ Feature: Managing pairing sessions
     When I follow "Delete" within my pairing sessions
     Then I should see "Pairing session was successfully deleted."
     And I should not see "Help fix a bug"
+    
+  @javascript @wip
+  Scenario: Delete a pairing session (Javascript)
+    Given a logged in user exists
+    And a pairing session exists with owner: the user, description: "Help fix a bug"
+    When I go to the pairing sessions page
+    Then I should see "Help fix a bug"
+
+    When I follow "Delete" within my pairing sessions
+    Then I should see "Pairing session was successfully deleted."
+    And I should not see "Help fix a bug"
