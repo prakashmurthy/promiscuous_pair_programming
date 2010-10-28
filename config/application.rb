@@ -31,7 +31,7 @@ module PromiscuousPairProgramming
     # config.i18n.default_locale = :de
 
     # JavaScript files you want as :defaults (application.js is always included).
-    # config.action_view.javascript_expansions[:defaults] = %w(jquery rails)
+    config.action_view.javascript_expansions[:defaults] = %w(jquery.min rails)
 
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding                          = "utf-8"
@@ -45,11 +45,5 @@ module PromiscuousPairProgramming
       g.test_framework :rspec, :fixture => true, :views => false
       g.fixture_replacement :factory_girl, :dir => "spec/factories"
     end
-    
-    # Include the right Javascript files when we say javascript_include_tag(:defaults)
-    # See: http://github.com/rails/jquery-ujs
-    # This doesn't seem to be working?!??
-    config.action_view.javascript_expansions[:defaults] = %w(jquery.min rails application)
-
   end
 end
