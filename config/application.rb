@@ -49,7 +49,7 @@ module PromiscuousPairProgramming
     # Include the right Javascript files when we say javascript_include_tag(:defaults)
     # See: http://github.com/rails/jquery-ujs
     # This doesn't seem to be working?!??
-    #config.action_view.javascript_expansions[:defaults] = %w(jquery rails application)
+    config.action_view.javascript_expansions[:defaults] = %w(jquery.min rails application)
 
   end
 end
