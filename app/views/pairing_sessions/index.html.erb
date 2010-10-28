@@ -12,8 +12,8 @@
 
 <% @pairing_sessions.each do |pairing_session| %>
   <tr>
-    <td><%= pairing_session.start_at.strftime("%m/%d/%Y %I:%M%p") %></td>
-    <td><%= pairing_session.end_at.strftime("%m/%d/%Y %I:%M%p") %></td>
+    <td><%= pairing_session.start_at %></td>
+    <td><%= pairing_session.end_at %></td>
     <td><%= pairing_session.description %></td>
     <td><%= link_to 'Show', pairing_session %></td>
     <td><%= link_to 'Edit', edit_pairing_session_path(pairing_session) %></td>

@@ -24,7 +24,8 @@ Feature: Managing pairing sessions
     And I fill in "Description" with "Work on RSpec bugs"
     And I press "Create Pairing session"
     Then I should see "Pairing session was successfully created."
-    And I should see "11/11/2010" within my pairing sessions
+    And I should see "11/11/2010 10:00AM" within my pairing sessions
+		And I should see "11/11/2010 01:00PM" within my pairing sessions
     And I should see "Work on RSpec bugs" within my pairing sessions
     And I should not see "Help fix a bug"
  
