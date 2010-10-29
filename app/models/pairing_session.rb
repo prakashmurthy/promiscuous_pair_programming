@@ -2,10 +2,10 @@ class PairingSession < ActiveRecord::Base
 
   belongs_to :owner, :class_name => "User"
 
-  validates :description, :presence => true
+  validates :description, :start_at, :end_at, :presence => true
   
-  validate :starts_in_future
-  validate :ends_after_start_time
+  validate :starts_in_future, :if => :timestamps_set?
+  validate :ends_after_start_time, :if => :timestamps_set?
   validate :no_overlap_between_sessions  
   
   private
@@ -16,6 +16,10 @@ class PairingSession < ActiveRecord::Base
   
   def ends_after_start_time
     errors.add(:end_at, "must be after the start time") if end_at <= start_at
+  end
+  
+  def timestamps_set?
+    start_at && end_at
   end
   
   def no_overlap_between_sessions

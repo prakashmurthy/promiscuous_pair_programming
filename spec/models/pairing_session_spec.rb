@@ -36,6 +36,16 @@ describe PairingSession do
       subject.should_not be_valid
     end
     
+    it "requires the start time" do
+      subject.start_at = nil
+      subject.should_not be_valid
+    end
+    
+    it "requires the end time" do
+      subject.end_at = nil
+      subject.should_not be_valid
+    end
+    
     it "requires a start time occurring before the end time" do
       subject.start_at = 2.day.from_now
       subject.end_at = 1.day.from_now
