@@ -6,12 +6,12 @@ gem 'devise', '1.1.3'
 gem 'omniauth', '0.1.5'
 gem "escape_utils", '0.1.9'
 
-# Bundle gems for the local environment. Make sure to
-# put test-only gems in this group so their generators
-# and rake tasks are available in development mode:
-group :test, :development do
-  gem "mongrel", ">= 1.2.0.pre2" # use mongrel instead of webrick for development
+group :development do
   gem 'heroku'
+  gem "mongrel", ">= 1.2.0.pre2" # use mongrel instead of webrick for development
+end
+
+group :test do
   gem 'rails3-generators'
   gem 'rspec-rails'
   gem 'cucumber-rails'
