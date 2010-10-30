@@ -3,60 +3,62 @@ require File.expand_path('../../spec_helper', __FILE__)
 describe PairingSession do
   subject { Factory.build(:pairing_session) }
 
-  it "should have a valid factory" do
-    subject.should be_valid
-  end
-
   describe "associations" do
+
+    # TODO: delete this spec?
     it "should have an owner" do
-      email         = "hello@world.com"
-      owner         = Factory.build(:user, :email => email)
-      subject.owner = owner
-      subject.save!
-      subject.reload
+      user = Factory.create(:user)
+      session = Factory.create(:pairing_session, :owner => user)
 
-      subject.owner.email.should == email
-
+      session.reload.owner.should == user
     end
+
   end
 
   describe "validations" do
+
+    it "requires a valid start time"
+    it "requires a valid end time"
+
     it "should require a description" do
-      subject.description = nil
+      subject.description = ''
+      subject.valid?
 
-      subject.should_not be_valid
-
-      subject.description = ""
-
-      subject.should_not be_valid
+      subject.errors[:description].should_not be_nil
     end
 
     it "must be in the future" do
-      subject.start_at = 1.day.ago
-      subject.should_not be_valid
+      subject.start_at = Time.now - 1.second
+      subject.valid?
+
+      subject.errors[:start_at].should_not be_nil
     end
 
     it "requires the start time" do
       subject.start_at = nil
-      subject.should_not be_valid
+      subject.valid?
+
+      subject.errors[:start_at].should_not be_nil
     end
 
     it "requires the end time" do
       subject.end_at = nil
-      subject.should_not be_valid
+      subject.valid?
+
+      subject.errors[:end_at].should_not be_nil
     end
 
     it "requires a start time occurring before the end time" do
-      subject.start_at = 2.day.from_now
-      subject.end_at = 1.day.from_now
-      subject.should_not be_valid
+      subject.start_at = (Time.now + 2.seconds)
+      subject.end_at   = (Time.now + 1.second)
+
+      subject.valid?
+
+      subject.errors[:end_at].should == ["must be after the start time"]
     end
 
     context "with an existing pairing session" do
       before do
-        start_at = 1.day.from_now
-        end_at   = 2.days.from_now
-
         @user    = Factory.create(:user)
         @session = Factory.create(:pairing_session, :owner => @user)
       end
@@ -128,13 +130,5 @@ describe PairingSession do
       end
     end
 
-
-#    it "should require a valid date" do
-#      subject.meeting_date = "hello"
-#      subject.should_not be_valid
-#
-#      subject.meeting_date = "12/40/2010"
-#      subject.should_not be_valid
-#    end
   end
 end
