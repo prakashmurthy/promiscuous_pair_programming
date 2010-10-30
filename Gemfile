@@ -7,13 +7,13 @@ gem 'omniauth', '0.1.5'
 gem "escape_utils", '0.1.9'
 
 group :development do
+  gem 'rspec-rails'
   gem 'heroku'
   gem "mongrel", ">= 1.2.0.pre2" # use mongrel instead of webrick for development
 end
 
 group :test do
   gem 'rails3-generators'
-  gem 'rspec-rails'
   gem 'cucumber-rails'
   gem 'pickle'
   gem 'capybara'
