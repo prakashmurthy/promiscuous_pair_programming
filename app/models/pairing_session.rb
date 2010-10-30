@@ -6,7 +6,7 @@ class PairingSession < ActiveRecord::Base
 
   validate :starts_in_future, :if => :timestamps_set?
   validate :ends_after_start_time, :if => :timestamps_set?
-  validate :no_overlap_between_sessions, :if => :timestamps_set?
+  validate :no_overlapping_sessions, :if => :timestamps_set?
 
   private
 
@@ -19,10 +19,10 @@ class PairingSession < ActiveRecord::Base
   end
 
   def timestamps_set?
-    start_at && end_at
+    start_at? && end_at?
   end
 
-  def no_overlap_between_sessions
+  def no_overlapping_sessions
     errors.add(:base, "You have already posted a session that overlaps with this one") if overlapping_sessions?
   end
 
