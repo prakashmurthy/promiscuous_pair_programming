@@ -1,7 +1,10 @@
 PromiscuousPairProgramming::Application.routes.draw do
-  match "pairing_sessions/index_all" => "pairing_sessions#index_all", :as => :all_user_pairing_sessions
-  
-  resources :pairing_sessions
+
+  resources :pairing_sessions  do
+    collection do
+      get 'index_all', :as => :all_user
+    end
+  end
   
   get "welcome/index"
 
