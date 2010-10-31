@@ -21,4 +21,5 @@ group :test do
   gem 'thin' # this will speed up your cucumber @javascript tests by a lot
   gem 'factory_girl_rails', :git => 'git://github.com/msgehard/factory_girl_rails.git'
   gem 'database_cleaner'
+  gem 'timecop'	
 end

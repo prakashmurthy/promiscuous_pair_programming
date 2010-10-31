@@ -7,7 +7,10 @@ class PairingSession < ActiveRecord::Base
   validate :starts_in_future, :if => :timestamps_set?
   validate :ends_after_start_time, :if => :timestamps_set?
   validate :no_overlapping_sessions, :if => :timestamps_set?
-
+  scope    :upcoming, lambda { 
+      where("pairing_sessions.start_at IS NOT NULL AND pairing_sessions.start_at >= ?", Time.zone.now)
+    }
+  
   private
 
   def starts_in_future

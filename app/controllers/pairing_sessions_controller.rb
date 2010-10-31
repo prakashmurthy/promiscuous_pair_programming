@@ -3,7 +3,7 @@ class PairingSessionsController < ApplicationController
   before_filter :assign_pairing_session, :only => [:show, :edit, :update, :destroy]
 
   def index
-    @pairing_sessions = current_user.pairing_sessions
+    @pairing_sessions = current_user.pairing_sessions.upcoming
   end
 
   def show; end

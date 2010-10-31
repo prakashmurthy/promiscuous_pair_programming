@@ -14,6 +14,18 @@ Feature: Managing pairing sessions
     Then I should see "Patch Active Record" within my pairing sessions
     And I should not see "Help fix a bug" within my pairing sessions
 
+  Scenario: Viewing my pairing sessions only shows me the pairing sessions
+    in the future
+    Given a logged in user exists
+    And the time is 11/01/2009 10:00 AM
+    And a pairing session exists with owner: the user, description: "Topic for future pairing session", start_at: "11/11/2051 10:00 AM", end_at: "11/11/2051 11:00 AM"
+    And a pairing session exists with owner: the user, description: "Topic for past pairing session", start_at: "11/11/2009 10:00 AM", end_at: "11/11/2009 11:00 AM"
+    And the time is 11/11/2010 10:00 AM
+    When I go to the root page
+    And I follow "My Sessions" within the navigation
+    Then I should see "Topic for future pairing session" within my pairing sessions
+    And I should not see "Topic for past pairing session" within my pairing sessions
+
   Scenario: Creating a new pairing session assigns the logged in user as the creator
     Given a user "another user" exists
     And a pairing session exists with owner: user: "another user", description: "Help fix a bug"
