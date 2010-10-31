@@ -31,15 +31,31 @@ Feature: Managing pairing sessions
     And a pairing session exists with owner: user: "another user", description: "Help fix a bug"
     And a logged in user exists
     When I follow "New Pairing session"
-    And I fill in "Start at" with "11/11/2010 10:00 AM"
-	  And I fill in "End at" with "11/11/2010 1:00 PM"
+    And I fill in "Start Date/Time" with "2010-11-12 10:00 AM"
+	  And I fill in "End Date/Time" with "2010-11-12 1:00 PM"
     And I fill in "Description" with "Work on RSpec bugs"
     And I press "Create Pairing session"
     Then I should see "Pairing session was successfully created."
-    And I should see "11/11/2010 10:00AM" within my pairing sessions
-		And I should see "11/11/2010 01:00PM" within my pairing sessions
+    And show me the page
+    And I should see "2010-11-12 10:00AM" within my pairing sessions
+		And I should see "2010-11-12 01:00PM" within my pairing sessions
     And I should see "Work on RSpec bugs" within my pairing sessions
-    And I should not see "Help fix a bug"
+    And I should not see "Help fix a bug" within my pairing sessions
+
+  Scenario: Editing an existing pairing session
+    Given a logged in user exists
+    And a pairing session exists with owner: the user, start_at: "2010-11-12 10:00 AM", end_at: "2010-11-12 11:00 AM", description: "Help fix a bug"
+    When I go to the pairing sessions page
+    And I follow "Edit"
+    And I fill in "Start Date/Time" with "2010-11-13 10:00 AM"
+	  And I fill in "End Date/Time" with "2010-11-13 1:00 PM"
+    And I press "Update Pairing session"
+    Then I should see "Pairing session was successfully updated."
+    And I should see "2010-11-13 10:00AM" within my pairing sessions
+		And I should see "2010-11-13 01:00PM" within my pairing sessions
+    And I should see "Help fix a bug" within my pairing sessions
+    And I should not see "2010-11-12 10:00AM" within my pairing sessions
+    And I should not see "2010-11-12 1:00PM" within my pairing sessions
  
   @javascript
   Scenario: Delete a pairing session

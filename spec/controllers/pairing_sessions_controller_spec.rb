@@ -101,7 +101,7 @@ describe PairingSessionsController do
       it "redirects to the pairing_session" do
         PairingSession.stub(:find) { mock_pairing_session(:update_attributes => true) }
         put :update, :id => "1"
-        response.should redirect_to(pairing_session_url(mock_pairing_session))
+        response.should redirect_to(pairing_sessions_path)
       end
     end
 

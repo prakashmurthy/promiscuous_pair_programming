@@ -27,7 +27,7 @@ class PairingSessionsController < ApplicationController
 
   def update
     if @pairing_session.update_attributes(params[:pairing_session])
-      redirect_to(@pairing_session, :notice => 'Pairing session was successfully updated.') and return
+      redirect_to(pairing_sessions_path, :notice => 'Pairing session was successfully updated.') and return
     end
     render :edit
   end
