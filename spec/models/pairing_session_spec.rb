@@ -4,15 +4,12 @@ describe PairingSession do
   subject { Factory.build(:pairing_session) }
 
   describe "associations" do
-
-    # TODO: delete this spec?
     it "should have an owner" do
       user = Factory.create(:user)
       session = Factory.create(:pairing_session, :owner => user)
 
       session.reload.owner.should == user
     end
-
   end
 
   describe "validations" do
@@ -27,7 +24,7 @@ describe PairingSession do
       subject.errors[:description].should_not be_nil
     end
 
-    it "must be in the future" do
+    it "must have a start time in the future" do
       subject.start_at = Time.now - 1.second
       subject.valid?
 
@@ -48,7 +45,7 @@ describe PairingSession do
       subject.errors[:end_at].should_not be_nil
     end
 
-    it "requires a start time occurring before the end time" do
+    it "requires a end time occurring after the start time" do
       subject.start_at = (Time.now + 2.seconds)
       subject.end_at   = (Time.now + 1.second)
 
@@ -119,6 +116,12 @@ describe PairingSession do
         overlapping_session.should_not be_valid
       end
 
+      it "should not consider the pairing session that we are editing when looking for time overlap" do
+        new_end_at = @session.end_at - 1.hour
+        @session.end_at = new_end_at
+        @session.should be_valid
+      end
+
       it "does not consider a session from another user as overlapping" do
         other_user    = Factory.create(:user)
         other_session = Factory.build(:pairing_session, {
@@ -129,6 +132,5 @@ describe PairingSession do
         other_session.should be_valid
       end
     end
-
   end
 end

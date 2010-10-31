@@ -30,9 +30,9 @@ class PairingSession < ActiveRecord::Base
   end
 
   def overlapping_sessions?
-    owner.pairing_sessions.count(:conditions => [
+    owner.pairing_sessions.where([
       "(start_at <= ? AND end_at >= ?) OR (end_at >= ? AND start_at <= ?)", end_at, start_at, start_at, end_at
-    ]) > 0
+    ]).where("id != ?", self.id).count > 0
   end
 
 end
