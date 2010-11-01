@@ -3,12 +3,11 @@ class PairingSessionsController < ApplicationController
   before_filter :assign_pairing_session, :only => [:show, :edit, :update, :destroy]
 
   def index
-    @pairing_sessions = current_user.pairing_sessions.upcoming.order(:start_at)
-  end
-  
-  def index_all # shows all pairing sessions, including those in the past
-    @pairing_sessions = current_user.pairing_sessions.order(:start_at)
-    render :index
+    if params[:show_all]
+      @pairing_sessions = current_user.pairing_sessions.order(:start_at)
+    else
+      @pairing_sessions = current_user.pairing_sessions.upcoming.order(:start_at)
+    end
   end
 
   def show; end

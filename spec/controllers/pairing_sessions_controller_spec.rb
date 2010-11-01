@@ -15,29 +15,48 @@ describe PairingSessionsController do
   end
 
   before(:each) do
-    @controller.stub(:current_user){mock_user()}
+    @controller.stub(:current_user) { mock_user() }
   end
 
   describe "GET index" do
-    it "assigns my pairing_sessions as @pairing_sessions" do
-      expected = mock_pairing_session
-      @controller.stub(:current_user){mock_user(:pairing_sessions => stub(:upcoming => expected))}
-      get :index
-      assigns(:pairing_sessions).should eq(expected)
+    describe "without a show_all parameter" do
+      it "assigns my pairing_sessions as @pairing_sessions" do
+        expected = mock_pairing_session
+        @controller.stub(:current_user) { mock_user(:pairing_sessions => stub(:upcoming => expected)) }
+        get :index
+        assigns(:pairing_sessions).should eq(expected)
+      end
+
+      it "sorts pairing_sessions from those starting the soonest to those starting the latest" do
+        # need a user with at least two sessions to ensure order
+        user               = Factory.create(:user)
+        # creating the sessions out of order to make sure that sort is actually working
+        future_session_one = Factory.create(:pairing_session, {:owner => user, :start_at => 2.days.from_now, :end_at => 3.days.from_now})
+        future_session_two = Factory.create(:pairing_session, {:owner => user}) # default one from factory is in the future starting one day from now
+
+        # okay, now we just need to make sure we have the user as the current one
+        @controller.stub(:current_user) { user }
+        # now we should get both sessions back if we view all sessions
+        get :index
+        assigns(:pairing_sessions).should == [future_session_two, future_session_one] # see above for why in this order
+      end
     end
-    
-    it "sorts pairing_sessions from those starting the soonest to those starting the latest" do
-      # need a user with at least two sessions to ensure order
-      user = Factory.create(:user)
-      # creating the sessions out of order to make sure that sort is actually working
-      future_session_one = Factory.create(:pairing_session, {:owner => user, :start_at => 2.days.from_now, :end_at => 3.days.from_now})
-      future_session_two = Factory.create(:pairing_session, {:owner => user}) # default one from factory is in the future starting one day from now
-      
-      # okay, now we just need to make sure we have the user as the current one
-      @controller.stub(:current_user){ user }
-      # now we should get both sessions back if we view all sessions
-      get :index_all
-      assigns(:pairing_sessions).should == [future_session_two, future_session_one] # see above for why in this order
+    describe "with a show_all parameter" do
+      it "shows all pairing sessions for the user, including those in the past, and they are sorted from oldest to newest" do
+        # need a user with at least two sessions, one in the future and one in the past
+        user           = Factory.create(:user)
+        future_session = Factory.create(:pairing_session, {:owner => user}) # default one from factory is in the future
+        # need to use save(false) to bypass validation, so we'll make that one with build and then call save ourselves
+        past_session   = Factory.build(:pairing_session, {:start_at    => 2.days.ago, :end_at => 1.day.ago,
+                                                          :description => "Session in the past", :owner => user})
+        past_session.save(:validate => false) # otherwise we can't create one in the past
+
+        # okay, now we just need to make sure we have the user as the current one
+        @controller.stub(:current_user) { user }
+        # now we should get both sessions back if we view all sessions
+        get :index, :show_all => true
+        assigns(:pairing_sessions).should == [past_session, future_session]
+      end
     end
   end
 
@@ -62,24 +81,6 @@ describe PairingSessionsController do
       PairingSession.stub(:find).with("37") { mock_pairing_session }
       get :edit, :id => "37"
       assigns(:pairing_session).should be(mock_pairing_session)
-    end
-  end
-  
-  describe "GET index_all" do
-    it "shows all pairing sessions for the user, including those in the past, and they are sorted from oldest to newest" do
-      # need a user with at least two sessions, one in the future and one in the past
-      user = Factory.create(:user)
-      future_session = Factory.create(:pairing_session, {:owner => user}) # default one from factory is in the future
-      # need to use save(false) to bypass validation, so we'll make that one with build and then call save ourselves
-      past_session = Factory.build(:pairing_session, {:start_at => 2.days.ago, :end_at => 1.day.ago,
-        :description => "Session in the past", :owner => user}) 
-      past_session.save(:validate => false) # otherwise we can't create one in the past
-      
-      # okay, now we just need to make sure we have the user as the current one
-      @controller.stub(:current_user){ user }
-      # now we should get both sessions back if we view all sessions
-      get :index_all
-      assigns(:pairing_sessions).should == [past_session, future_session]
     end
   end
 
