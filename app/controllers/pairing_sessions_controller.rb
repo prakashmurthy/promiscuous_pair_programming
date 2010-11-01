@@ -1,6 +1,7 @@
 class PairingSessionsController < ApplicationController
 
   before_filter :assign_pairing_session, :only => [:show, :edit, :update, :destroy]
+  before_filter :redirect_if_not_logged_in
 
   def index
     if params[:show_all]
@@ -45,6 +46,10 @@ class PairingSessionsController < ApplicationController
 
   def assign_pairing_session
     @pairing_session = PairingSession.find(params[:id])
+  end
+
+  def redirect_if_not_logged_in
+    redirect_to '/' if current_user.nil?
   end
 
 end
