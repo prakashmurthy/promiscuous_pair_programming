@@ -8,29 +8,48 @@
 </head>
 <body>
 
-<% if current_user %>
-<div id="account_management">
-  <%= link_to "Sign out", destroy_user_session_path %>
-</div>
-<div id="welcome">
-  Hello <%= current_user.email %>
-</div>
-<div id="navigation">
-  <%=link_to "My Sessions", pairing_sessions_path %>
-</div>
-<% else %>
-<div id="account_management">
-  <%= link_to "Create an account", new_user_registration_path %> or
-  <%= link_to "Sign in", new_user_session_path %>
-</div>
-<% end %>
 
-<div id="flashes">
+<div class="flashes">
   <p class="notice"><%= notice %></p>
   <p class="alert"><%= alert %></p>
 </div>
 
-<%= yield %>
 
+
+<div id="wrapper">
+	<div id="header-wrapper">
+	<div id="header">
+		<div id="logo">
+			<h1><a href="#">Promiscuous Pair Programming   </a></h1>
+		</div>
+	</div>
+	</div>
+	<!-- end #header -->
+	<div id="page">
+	<div id="page-bgtop">
+	<div id="page-bgbtm">
+		<div id="content">
+			<%= yield %>
+		<div style="clear: both;">&nbsp;</div>
+		</div>
+		<!-- end #content -->
+		<div id="sidebar">
+			<ul>
+				<li>
+					<%= render :partial => "shared/navigation"%>
+				</li>
+			</ul>
+		</div>
+		<!-- end #sidebar -->
+		<div style="clear: both;">&nbsp;</div>
+	</div>
+	</div>
+	</div>
+	<!-- end #page -->
+</div>
+	<div id="footer">
+		<p>Copyright (c) 2010 Promiscuour-pair-programming.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
+	</div>
+	<!-- end #footer -->
 </body>
 </html>
