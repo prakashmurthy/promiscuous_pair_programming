@@ -25,4 +25,4 @@
 <br />
 
 <%= link_to 'New Pairing session', new_pairing_session_path %>
-<%= link_to("Show all sessions, including past ones", all_user_pairing_sessions_path) if controller.action_name != "index_all" %>
+<%= link_to("Show all sessions, including past ones", "#{pairing_sessions_path}?show_all=true") unless params[:show_all] %>
