@@ -7,12 +7,12 @@
 
 <p>
   <b>Start Time:</b>
-  <%= @pairing_session.start_at.strftime("%m/%d/%Y %I:%M%p") %>
+  <%= @pairing_session.start_at %>
 </p>
 
 <p>
   <b>End Time:</b>
-  <%= @pairing_session.end_at.strftime("%m/%d/%Y %I:%M%p") %>
+  <%= @pairing_session.end_at %>
 </p>
 
 <%= link_to 'Edit', edit_pairing_session_path(@pairing_session) %> |
