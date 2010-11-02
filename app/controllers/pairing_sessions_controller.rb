@@ -1,7 +1,6 @@
-class PairingSessionsController < ApplicationController
+class PairingSessionsController < SecureApplicationController
 
   before_filter :assign_pairing_session, :only => [:show, :edit, :update, :destroy]
-  before_filter :redirect_if_not_logged_in
 
   def index
     if params[:show_all]
@@ -11,13 +10,17 @@ class PairingSessionsController < ApplicationController
     end
   end
 
-  def show; end
+  def show
+
+  end
 
   def new
     @pairing_session = PairingSession.new
   end
 
-  def edit; end
+  def edit
+
+  end
 
   # TODO: use scoped builder instead of assigning to owner
   def create
@@ -47,9 +50,4 @@ class PairingSessionsController < ApplicationController
   def assign_pairing_session
     @pairing_session = PairingSession.find(params[:id])
   end
-
-  def redirect_if_not_logged_in
-    redirect_to '/' if current_user.nil?
-  end
-
 end

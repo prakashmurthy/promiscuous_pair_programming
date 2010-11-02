@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe PairingSessionsController do
 
+  it "inherits from SecureApplicationController" do
+    @controller.is_a?(SecureApplicationController).should be_true
+  end
+
   def mock_pairing_session(stubs={})
     (@mock_pairing_session ||= mock_model(PairingSession).as_null_object).tap do |pairing_session|
       pairing_session.stub(stubs) unless stubs.empty?
@@ -15,7 +19,8 @@ describe PairingSessionsController do
   end
 
   before(:each) do
-    @controller.stub(:current_user) { mock_user() }
+    @user = Factory.create(:user)
+    sign_in @user
   end
 
   describe "GET index" do
