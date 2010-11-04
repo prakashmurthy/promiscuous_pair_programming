@@ -29,7 +29,7 @@ describe PairingSessionsController do
         expected = mock_pairing_session
         @controller.stub(:current_user) { mock_user(:pairing_sessions => stub(:upcoming => expected)) }
         get :index
-        assigns(:pairing_sessions).should eq(expected)
+        assigns(:my_pairing_sessions).should eq(expected)
       end
 
       it "sorts pairing_sessions from those starting the soonest to those starting the latest" do
@@ -43,7 +43,7 @@ describe PairingSessionsController do
         @controller.stub(:current_user) { user }
         # now we should get both sessions back if we view all sessions
         get :index
-        assigns(:pairing_sessions).should == [future_session_two, future_session_one] # see above for why in this order
+        assigns(:my_pairing_sessions).should == [future_session_two, future_session_one] # see above for why in this order
       end
     end
     describe "with a show_all parameter" do
@@ -60,7 +60,7 @@ describe PairingSessionsController do
         @controller.stub(:current_user) { user }
         # now we should get both sessions back if we view all sessions
         get :index, :show_all => true
-        assigns(:pairing_sessions).should == [past_session, future_session]
+        assigns(:my_pairing_sessions).should == [past_session, future_session]
       end
     end
   end

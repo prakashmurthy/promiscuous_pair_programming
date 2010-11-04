@@ -4,10 +4,11 @@ class PairingSessionsController < SecureApplicationController
 
   def index
     if params[:show_all]
-      @pairing_sessions = current_user.pairing_sessions.order(:start_at)
+      @my_pairing_sessions = current_user.pairing_sessions.order(:start_at)
     else
-      @pairing_sessions = current_user.pairing_sessions.upcoming.order(:start_at)
+      @my_pairing_sessions = current_user.pairing_sessions.upcoming.order(:start_at)
     end
+    @available_pairing_sessions = PairingSession.not_owned_by(current_user).without_pair
   end
 
   def show

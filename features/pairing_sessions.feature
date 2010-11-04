@@ -27,6 +27,7 @@ Feature: Managing pairing sessions
     And I should not see "Topic for past pairing session" within my pairing sessions
 
   Scenario: Creating a new pairing session assigns the logged in user as the creator
+    and is available to view
     Given a user "another user" exists
     And a pairing session exists with owner: user: "another user", description: "Help fix a bug"
     And a logged in user exists
@@ -56,7 +57,8 @@ Feature: Managing pairing sessions
     And I should not see "2010-11-12 10:00AM" within my pairing sessions
     And I should not see "2010-11-12 1:00PM" within my pairing sessions
 
-  Scenario: Viewing all my pairing sessions shows me my pairing sessions including those in the past, and they are sorted oldest to newest
+  Scenario: Viewing all my pairing sessions shows me my pairing sessions including those
+    in the past, and they are sorted oldest to newest
 	  Given a logged in user exists
 	  And the time is 11/01/2009 10:00 AM
 	  And a pairing session exists with owner: the user, description: "Topic for future pairing session", start_at: "11/11/2051 10:00 AM", end_at: "11/11/2051 11:00 AM"
@@ -84,3 +86,15 @@ Feature: Managing pairing sessions
     And I follow "Delete" within my pairing sessions
     Then I should see "Pairing session was successfully deleted."
     And I should not see "Help fix a bug"
+
+  Scenario: Viewing a list of pairing sessions that I can pair on.
+    Given a user "session owner" exists
+    And a user "pair" exists
+    And a pairing session exists with owner: user: "session owner", description: "Open session", start_at: "2010-11-12 10:00 AM", end_at: "2010-11-12 11:00 AM"
+    And a pairing session exists with owner: user: "session owner", pair: user: "pair", description: "This session taken", start_at: "2010-11-13 10:00 AM", end_at: "2010-11-13 11:00 AM"
+    And a logged in user exists
+    And a pairing session exists with owner: the user, description: "This is my session", start_at: "2010-11-11 10:00 AM", end_at: "2010-11-11 11:00 AM"
+    When I go to the pairing sessions page
+    Then I should see "Open session" within available pairing sessions
+    And I should not see "This session taken" within available pairing sessions
+    And I should not see "This is my session" within available pairing sessions

@@ -3,6 +3,27 @@ require File.expand_path('../../spec_helper', __FILE__)
 describe PairingSession do
   subject { Factory.build(:pairing_session) }
 
+  describe "#not_owned_by" do
+    it "should include sessions owned by a user" do
+      me = Factory.create(:user)
+      my_session = Factory.create(:pairing_session, :owner => me)
+      not_my_session = Factory.create(:pairing_session)
+
+      PairingSession.not_owned_by(me).should == [not_my_session]
+
+    end
+  end
+
+  describe "#without_pair" do
+    it "should not include sessions that have a pair" do
+      pair = Factory.create(:user)
+      taken_session = Factory.create(:pairing_session, :pair => pair)
+      open_session = Factory.create(:pairing_session)
+
+      PairingSession.without_pair.should == [open_session]
+    end
+  end
+
   describe "associations" do
     it "should have an owner" do
       user = Factory.create(:user)
@@ -10,12 +31,15 @@ describe PairingSession do
 
       session.reload.owner.should == user
     end
+
+    it "should have a pair" do
+      pair = Factory.create(:user)
+      session = Factory.create(:pairing_session, :pair => pair)
+      session.pair.should == pair
+    end
   end
 
   describe "validations" do
-
-    it "requires a valid start time"
-    it "requires a valid end time"
 
     it "should require a description" do
       subject.description = ''
