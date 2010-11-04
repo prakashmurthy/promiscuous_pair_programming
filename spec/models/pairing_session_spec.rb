@@ -3,6 +3,23 @@ require File.expand_path('../../spec_helper', __FILE__)
 describe PairingSession do
   subject { Factory.build(:pairing_session) }
 
+  it "sorts the sessions by start time by default" do
+    session_1 = Factory.create(:pairing_session, :start_at => 1.hour.from_now, :end_at => 2.hours.from_now)
+    session_2 = Factory.create(:pairing_session, :start_at => 30.minutes.from_now, :end_at => 45.minutes.from_now)
+    
+    PairingSession.all.should == [session_2, session_1]
+  end
+
+  it "knows the available pairing sessions" do
+    past        = Factory.build(:pairing_session, :start_at => 1.day.ago, :end_at => (1.day.ago + 1.second))
+    past.save(:validate => false)
+
+    available   = Factory.create(:pairing_session, :state => 'pending')
+    unavailable = Factory.create(:pairing_session, :state => 'accepted')
+
+    PairingSession.available.should == [available]
+  end
+
   describe "associations" do
     it "should have an owner" do
       user = Factory.create(:user)
@@ -16,6 +33,29 @@ describe PairingSession do
 
     it "requires a valid start time"
     it "requires a valid end time"
+
+    it "requires a state" do
+      subject.state = nil
+      subject.valid?
+
+      subject.errors[:state].should_not be_empty
+    end
+
+    %w(pending accepted declined).each do |state|
+      it "allows #{state} as a state" do
+        subject.state = state
+        subject.valid?
+
+        subject.errors[:state].should be_empty
+      end
+    end
+
+    it "does not allow an unknown state" do
+      subject.state = 'bogus'
+      subject.valid?
+
+      subject.errors[:state].should_not be_empty
+    end
 
     it "should require a description" do
       subject.description = ''

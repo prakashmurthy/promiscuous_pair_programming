@@ -1,8 +1,20 @@
 <h1>Welcome To Promiscuous Pair Programming!</h1>
 <div>
-	This application is an open-source Rails 3 project intended to promote pair programming.
-	Please visit our <a href="http://github.com/prakashmurthy/promiscuous_pair_programming#readme">homepage</a> for more information.
+  This application is an open-source Rails 3 project intended to promote pair programming.
+  Please visit our <a href="http://github.com/prakashmurthy/promiscuous_pair_programming#readme">homepage</a> for more information.
 </div>
+
+<h2>Available Pairing Sessions</h2>
+<% if @pairing_sessions.any? %>
+<ul class="pairing-sessions">
+  <% @pairing_sessions.each do |session| %>
+    <li>
+      Available from <strong><%= session.start_at %></strong> to <strong><%= session.end_at %></strong><br />
+      <span>Posted by: <%= session.owner.email %></span>
+    </li>
+  <% end %>
+</ul>
+<% end %>
 
 <% if current_user %>
 <br/>
