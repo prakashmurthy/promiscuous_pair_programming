@@ -1,16 +1,17 @@
 <h1>Listing Pairing Sessions</h1>
 
+<h2>Pairing Sessions I have created</h1>
 <table id="my_pairing_sessions">
   <tr>
-	<th>Start time</th>
-	<th>End time</th>
+	  <th>Start time</th>
+	  <th>End time</th>
     <th>Description</th>
     <th></th>
     <th></th>
     <th></th>
   </tr>
 
-<% @pairing_sessions.each do |pairing_session| %>
+<% @my_pairing_sessions.each do |pairing_session| %>
   <tr>
     <td><%= pairing_session.start_at %></td>
     <td><%= pairing_session.end_at %></td>
@@ -26,3 +27,23 @@
 
 <%= link_to 'New Pairing session', new_pairing_session_path %>
 <%= link_to("Show all sessions, including past ones", "#{pairing_sessions_path}?show_all=true") unless params[:show_all] %>
+
+<h2>Pairing sessions that I can pair on</h2>
+<table id="available_pairing_sessions">
+  <tr>
+	  <th>Start time</th>
+	  <th>End time</th>
+    <th>Description</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @available_pairing_sessions.each do |pairing_session| %>
+  <tr>
+    <td><%= pairing_session.start_at %></td>
+    <td><%= pairing_session.end_at %></td>
+    <td><%= pairing_session.description %></td>
+  </tr>
+<% end %>
+</table>

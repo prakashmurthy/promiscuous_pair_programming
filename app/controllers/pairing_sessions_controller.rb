@@ -1,22 +1,27 @@
-class PairingSessionsController < ApplicationController
+class PairingSessionsController < SecureApplicationController
 
   before_filter :assign_pairing_session, :only => [:show, :edit, :update, :destroy]
 
   def index
     if params[:show_all]
-      @pairing_sessions = current_user.pairing_sessions.order(:start_at)
+      @my_pairing_sessions = current_user.pairing_sessions.order(:start_at)
     else
-      @pairing_sessions = current_user.pairing_sessions.upcoming.order(:start_at)
+      @my_pairing_sessions = current_user.pairing_sessions.upcoming.order(:start_at)
     end
+    @available_pairing_sessions = PairingSession.not_owned_by(current_user).without_pair
   end
 
-  def show; end
+  def show
+
+  end
 
   def new
     @pairing_session = PairingSession.new
   end
 
-  def edit; end
+  def edit
+
+  end
 
   # TODO: use scoped builder instead of assigning to owner
   def create
@@ -46,5 +51,4 @@ class PairingSessionsController < ApplicationController
   def assign_pairing_session
     @pairing_session = PairingSession.find(params[:id])
   end
-
 end

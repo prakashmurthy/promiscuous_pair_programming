@@ -1,6 +1,7 @@
 class PairingSession < ActiveRecord::Base
 
   belongs_to :owner, :class_name => "User"
+  belongs_to :pair, :class_name => "User"
 
   validates :description, :start_at, :end_at, :presence => true
 
@@ -10,6 +11,9 @@ class PairingSession < ActiveRecord::Base
   scope    :upcoming, lambda { 
       where("pairing_sessions.start_at IS NOT NULL AND pairing_sessions.start_at >= ?", Time.zone.now)
     }
+
+  scope :not_owned_by, lambda {|user| where('owner_id != ?', user.id) }
+  scope :without_pair, where('pair_id IS NULL')
   
   private
 
