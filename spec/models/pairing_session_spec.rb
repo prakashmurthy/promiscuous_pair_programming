@@ -23,6 +23,28 @@ describe PairingSession do
       PairingSession.without_pair.should == [open_session]
     end
   end
+  
+  describe "#sessions_where_user_is_pair" do
+    it "should only show sessions where the user is the pair" do
+      me = Factory.create(:user)
+      my_friend = Factory.create(:user)
+      my_friends_session_where_I_am_not_pairing_next_week = Factory.create(:pairing_session, :owner => my_friend, :start_at => 7.day.from_now, :end_at => 8.day.from_now)
+      my_friends_session_where_I_am_pairing_in_three_days = Factory.build(:pairing_session, {
+        :owner => my_friend, 
+        :pair => me, 
+        :start_at => 3.day.from_now, 
+        :end_at => 4.day.from_now
+      })
+      my_friends_session_where_I_am_pairing_tomorrow = Factory.build(:pairing_session, {
+        :owner => my_friend,
+        :pair => me
+      })
+      my_friends_session_where_I_am_pairing_in_three_days.save!
+      my_friends_session_where_I_am_pairing_tomorrow.save!
+    
+      PairingSession.sessions_where_user_is_pair(me).should == [my_friends_session_where_I_am_pairing_tomorrow, my_friends_session_where_I_am_pairing_in_three_days]
+    end
+  end
 
   describe "associations" do
     it "should have an owner" do
@@ -76,6 +98,12 @@ describe PairingSession do
       subject.valid?
 
       subject.errors[:end_at].should == ["must be after the start time"]
+    end
+    
+    it "can't have the owner and the pair be the same user" do
+      subject.pair_id = subject.owner_id
+      subject.valid?
+      subject.errors[:pair_id].should == ["The owner of a session can't be the pair as well. That wouldn't help anyone!"]
     end
 
     context "with an existing pairing session" do

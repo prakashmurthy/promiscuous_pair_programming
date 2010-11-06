@@ -70,6 +70,13 @@ Feature: Managing pairing sessions
     Then I should see "Topic for future pairing session" within my pairing sessions
     And I should see "Topic for past pairing session" within my pairing sessions
 
+  
+#  Pending Scenario: I can sign up to be the pair for a pairing session I am not the owner of
+#	Given a logged in user exists
+#	And a pairing session exists with owner: "another user", start_at: "2015-10-11 10:00 AM", end_at: "2015-10-11 12:00 PM", description: "Help fix a bug way in the future"
+#	When I go to the pairing sessions page
+	
+
   @javascript
   Scenario: Delete a pairing session
     Given a logged in user exists

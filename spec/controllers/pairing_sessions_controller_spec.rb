@@ -135,6 +135,12 @@ describe PairingSessionsController do
         put :update, :id => "1"
         assigns(:pairing_session).should be(mock_pairing_session)
       end
+      
+      it "will update the pair_id if specified" do
+        PairingSession.should_receive(:find).with("37") { mock_pairing_session }
+        mock_pairing_session.should_receive(:update_attributes).with( {'pair_id' => '8'} )
+        put :update, :id => "37", :pairing_session => {'pair_id' => '8'}
+      end
 
       it "redirects to the pairing_session" do
         PairingSession.stub(:find) { mock_pairing_session(:update_attributes => true) }

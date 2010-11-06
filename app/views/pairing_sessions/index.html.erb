@@ -1,6 +1,8 @@
-<h1>Listing Pairing Sessions</h1>
+<h1>All there is to know about your pairing sessions</h1>
+<br /><br />
 
-<h2>Pairing Sessions I have created</h1>
+<h2>Pairing Sessions I have created</h2>
+<br/>
 <table id="my_pairing_sessions">
   <tr>
 	  <th>Start time</th>
@@ -23,12 +25,44 @@
 <% end %>
 </table>
 
-<br />
+<br /><br />
 
 <%= link_to 'New Pairing session', new_pairing_session_path %>
 <%= link_to("Show all sessions, including past ones", "#{pairing_sessions_path}?show_all=true") unless params[:show_all] %>
 
+<br /><br />
+
+<h2>Sessions I am pairing on</h2>
+<br />
+<table id="paired_sessions">
+  <tr>
+	<th>Session Owner</th>
+    <th>Start time</th>
+    <th>End time</th>
+    <th>Description</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>	
+
+<% @sessions_user_is_pairing_on.each do |pairing_session| %>
+  <tr>
+	<td><%= pairing_session.owner.email %></td>
+    <td><%= pairing_session.start_at %> </td>
+    <td><%= pairing_session.end_at %></td>
+    <td><%= pairing_session.description %></td>
+	<% pairing_session.pair_id = current_user.id %>
+	<td><%= button_to "Sorry, gotta cancel.", pairing_session_path( :id => pairing_session.id, :pairing_session => { :pair_id => nil } ), 
+		{:method => :put} %></td>
+  </tr>
+<% end %>
+	
+</table>
+
+<br /><br />
+
 <h2>Pairing sessions that I can pair on</h2>
+<br />
 <table id="available_pairing_sessions">
   <tr>
 	  <th>Start time</th>
@@ -41,9 +75,12 @@
 
 <% @available_pairing_sessions.each do |pairing_session| %>
   <tr>
-    <td><%= pairing_session.start_at %></td>
+    <td><%= pairing_session.start_at %> </td>
     <td><%= pairing_session.end_at %></td>
     <td><%= pairing_session.description %></td>
+	<% pairing_session.pair_id = current_user.id %>
+	<td><%= button_to "I'll pair on this!", pairing_session_path( :id => pairing_session.id, :pairing_session => { :pair_id => current_user.id } ), 
+		{:method => :put} %></td>
   </tr>
 <% end %>
 </table>
