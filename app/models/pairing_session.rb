@@ -9,16 +9,17 @@ class PairingSession < ActiveRecord::Base
   validate :starts_in_future, :if => :timestamps_set?
   validate :ends_after_start_time, :if => :timestamps_set?
   validate :no_overlapping_sessions, :if => :timestamps_set?
-  
-  validate :owner_is_not_pair
-  
-  scope    :upcoming, lambda { 
-      where("pairing_sessions.start_at IS NOT NULL AND pairing_sessions.start_at >= ?", Time.zone.now)
-    }
+
+  validate :pair_is_not_owner
+
+  default_scope order(:start_at)
+
+  scope :upcoming, lambda { where("pairing_sessions.start_at >= ?", Time.zone.now) }
   scope :not_owned_by, lambda {|user| where('owner_id != ?', user.id) }
   scope :without_pair, where('pair_id IS NULL')
+  scope :available, upcoming.without_pair
   scope :sessions_where_user_is_pair, lambda { |user| where('pair_id = ?', user.id).order("start_at ASC") }
-  
+
   private
 
   def starts_in_future
@@ -37,6 +38,10 @@ class PairingSession < ActiveRecord::Base
     errors.add(:base, "You have already posted a session that overlaps with this one") if overlapping_sessions?
   end
 
+  def pair_is_not_owner
+    errors.add(:base, "You cannot accept your own pairing request") if pair == owner
+  end
+
   def overlapping_sessions?
     scope = owner.pairing_sessions.where([
       "(start_at <= ? AND end_at >= ?) OR (end_at >= ? AND start_at <= ?)", end_at, start_at, start_at, end_at
@@ -44,12 +49,6 @@ class PairingSession < ActiveRecord::Base
     scope = scope.where("id != ?", self.id) unless self.new_record?
 
     scope.count > 0
-  end
-  
-  def owner_is_not_pair
-    if owner_id == pair_id
-      errors.add(:pair_id, "The owner of a session can't be the pair as well. That wouldn't help anyone!")
-    end
   end
 
 end

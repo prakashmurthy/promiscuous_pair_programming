@@ -3,6 +3,23 @@ require File.expand_path('../../spec_helper', __FILE__)
 describe PairingSession do
   subject { Factory.build(:pairing_session) }
 
+  it "sorts the sessions by start time by default" do
+    second = Factory.create(:pairing_session, :start_at => 1.hour.from_now, :end_at => 2.hours.from_now)
+    first  = Factory.create(:pairing_session, :start_at => 30.minutes.from_now, :end_at => 45.minutes.from_now)
+
+    PairingSession.all.should == [first, second]
+  end
+
+  it "knows the available pairing sessions" do
+    past        = Factory.build(:pairing_session, :start_at => 1.day.ago, :end_at => (1.day.ago + 1.second))
+    past.save(:validate => false)
+
+    available   = Factory.create(:pairing_session, :pair => nil)
+    unavailable = Factory.create(:pairing_session, :pair => Factory.create(:user))
+
+    PairingSession.available.should == [available]
+  end
+
   describe "#not_owned_by" do
     it "should include sessions owned by a user" do
       me = Factory.create(:user)
@@ -10,7 +27,6 @@ describe PairingSession do
       not_my_session = Factory.create(:pairing_session)
 
       PairingSession.not_owned_by(me).should == [not_my_session]
-
     end
   end
 
@@ -63,6 +79,9 @@ describe PairingSession do
 
   describe "validations" do
 
+    it "requires a valid start time"
+    it "requires a valid end time"
+
     it "should require a description" do
       subject.description = ''
       subject.valid?
@@ -99,11 +118,13 @@ describe PairingSession do
 
       subject.errors[:end_at].should == ["must be after the start time"]
     end
-    
-    it "can't have the owner and the pair be the same user" do
-      subject.pair_id = subject.owner_id
-      subject.valid?
-      subject.errors[:pair_id].should == ["The owner of a session can't be the pair as well. That wouldn't help anyone!"]
+
+    it "doesn't allow a user to accept his own pairing session" do
+      user    = Factory.create(:user)
+      session = Factory.build(:pairing_session, :owner => user, :pair => user)
+      session.valid?
+
+      session.errors[:base].should == ["You cannot accept your own pairing request"]
     end
 
     context "with an existing pairing session" do
