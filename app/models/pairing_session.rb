@@ -1,5 +1,4 @@
 class PairingSession < ActiveRecord::Base
-  
   belongs_to :owner, :class_name => "User"
   belongs_to :pair, :class_name => "User"
 
