@@ -40,7 +40,7 @@ describe PairingSession do
     end
   end
   
-  describe "#sessions_where_user_is_pair" do
+  describe "#where_user_is_pair" do
     it "should only show sessions where the user is the pair" do
       me = Factory.create(:user)
       my_friend = Factory.create(:user)
@@ -58,7 +58,7 @@ describe PairingSession do
       my_friends_session_where_I_am_pairing_in_three_days.save!
       my_friends_session_where_I_am_pairing_tomorrow.save!
     
-      PairingSession.sessions_where_user_is_pair(me).should == [my_friends_session_where_I_am_pairing_tomorrow, my_friends_session_where_I_am_pairing_in_three_days]
+      PairingSession.where_user_is_pair(me).should == [my_friends_session_where_I_am_pairing_tomorrow, my_friends_session_where_I_am_pairing_in_three_days]
     end
   end
 

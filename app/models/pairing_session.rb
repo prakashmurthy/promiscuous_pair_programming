@@ -1,5 +1,4 @@
 class PairingSession < ActiveRecord::Base
-  include ActiveModel::Validations
   
   belongs_to :owner, :class_name => "User"
   belongs_to :pair, :class_name => "User"
@@ -18,7 +17,7 @@ class PairingSession < ActiveRecord::Base
   scope :not_owned_by, lambda {|user| where('owner_id != ?', user.id) }
   scope :without_pair, where('pair_id IS NULL')
   scope :available, upcoming.without_pair
-  scope :sessions_where_user_is_pair, lambda { |user| where('pair_id = ?', user.id).order("start_at ASC") }
+  scope :where_user_is_pair, lambda { |user| where( "pair_id = ?", user.id) }
 
   private
 
