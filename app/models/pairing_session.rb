@@ -1,6 +1,4 @@
 class PairingSession < ActiveRecord::Base
-  include ActiveModel::Validations
-  
   belongs_to :owner, :class_name => "User"
   belongs_to :pair, :class_name => "User"
 
