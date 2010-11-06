@@ -30,7 +30,7 @@ class PairingSession < ActiveRecord::Base
   end
 
   def timestamps_set?
-    start_at? && end_at?
+    start_at.present? && end_at.present?
   end
 
   def no_overlapping_sessions
