@@ -14,6 +14,8 @@ module HtmlSelectorsHelpers
         'html > body  #my_pairing_sessions'
       when /available pairing sessions/
         'html > body  #available_pairing_sessions'
+      when /sessions I am pairing on/
+        'html > body  #paired_sessions'
       when /the account management section/
         "html > body  #account_management"
       when /the navigation/
