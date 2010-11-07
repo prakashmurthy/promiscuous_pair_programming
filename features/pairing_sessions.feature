@@ -88,15 +88,19 @@ Feature: Managing pairing sessions
     Then I should see "Pairing session was successfully deleted."
     And I should not see "Help fix a bug"
 
-  Scenario: Viewing a list of pairing sessions that I can pair on.
+  Scenario: Viewing a list of pairing sessions I can pair on should exclude past sessions
     Given a user "session owner" exists
     And a user "pair" exists
-    And a pairing session exists with owner: user: "session owner", description: "Open session", start_at: "2010-11-12 10:00 AM", end_at: "2010-11-12 11:00 AM"
-    And a pairing session exists with owner: user: "session owner", pair: user: "pair", description: "This session taken", start_at: "2010-11-13 10:00 AM", end_at: "2010-11-13 11:00 AM"
     And a logged in user exists
-    And a pairing session exists with owner: the user, description: "This is my session", start_at: "2010-11-11 10:00 AM", end_at: "2010-11-11 11:00 AM"
+    And the time is "2010-01-01 00:00:00"
+    And a pairing session exists with owner: user "session owner", description: "Open but past session", start_at: "2010-01-02 10:00 AM", end_at: "2010-01-02 11:00 AM"
+    And the time is "2010-01-03 00:00:00"
+    And a pairing session exists with owner: user "session owner", description: "Open session", start_at: "2010-01-04 10:00 AM", end_at: "2010-01-04 11:00 AM"
+    And a pairing session exists with owner: user "session owner", pair: user "pair", description: "This session taken", start_at: "2010-01-05 10:00 AM", end_at: "2010-01-05 11:00 AM"
+    And a pairing session exists with owner: the user, description: "This is my session", start_at: "2010-01-06 10:00 AM", end_at: "2010-01-06 11:00 AM"
     When I go to the pairing sessions page
     Then I should see "Open session" within available pairing sessions
+    And I should not see "Open but past session" within available pairing sessions
     And I should not see "This session taken" within available pairing sessions
     And I should not see "This is my session" within available pairing sessions
 

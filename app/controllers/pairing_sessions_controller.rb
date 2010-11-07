@@ -8,7 +8,7 @@ class PairingSessionsController < SecureApplicationController
     else
       @my_pairing_sessions = current_user.owned_pairing_sessions.upcoming.order(:start_at)
     end
-    @available_pairing_sessions = PairingSession.not_owned_by(current_user).without_pair
+    @available_pairing_sessions = PairingSession.not_owned_by(current_user).without_pair.upcoming
     @sessions_user_is_pairing_on = current_user.pairing_sessions_as_pair
   end
 

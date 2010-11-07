@@ -45,6 +45,40 @@ describe PairingSessionsController do
         get :index
         assigns(:my_pairing_sessions).should == [future_session_two, future_session_one] # see above for why in this order
       end
+      
+      it "@available_pairing_sessions should only include sessions not owned by the current user" do
+        user, user2 = Array.new(2) { Factory.create(:user) }
+        not_owned_by = Factory.create(:pairing_session, :owner => user2)
+        owned_by = Factory.create(:pairing_session, :owner => user)
+        @controller.stub(:current_user) { user }
+        get :index
+        assigns(:available_pairing_sessions).should include(not_owned_by)
+        assigns(:available_pairing_sessions).should_not include(owned_by)
+      end
+      
+      it "@available_pairing_sessions should only include sessions without a pair" do
+        user, user2, user3 = Array.new(3) { Factory.create(:user) }
+        without_a_pair = Factory.create(:pairing_session, :owner => user2, :pair => nil)
+        with_a_pair = Factory.create(:pairing_session, :owner => user2, :pair => user3)
+        @controller.stub(:current_user) { user }
+        get :index
+        assigns(:available_pairing_sessions).should include(without_a_pair)
+        assigns(:available_pairing_sessions).should_not include(with_a_pair)
+      end
+      
+      it "@available_pairing_sessions should exclude sessions in the past" do
+        user, user2 = Array.new(2) { Factory.create(:user) }
+        Timecop.freeze(2010, 1, 1)
+        in_the_past = Factory.create(:pairing_session, :owner => user2, :start_at => Time.local(2010, 1, 1))
+        Timecop.freeze(2010, 1, 2)
+        in_the_present = Factory.create(:pairing_session, :owner => user2, :start_at => Time.local(2010, 1, 2))
+        in_the_future = Factory.create(:pairing_session, :owner => user2, :start_at => Time.local(2010, 1, 3))
+        @controller.stub(:current_user) { user }
+        get :index
+        assigns(:available_pairing_sessions).should include(in_the_present)
+        assigns(:available_pairing_sessions).should include(in_the_future)
+        assigns(:available_pairing_sessions).should_not include(in_the_past)
+      end
     end
     describe "with a show_all parameter" do
       it "shows all pairing sessions for the user, including those in the past, and they are sorted from oldest to newest" do
