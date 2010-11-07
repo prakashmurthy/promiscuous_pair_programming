@@ -20,6 +20,8 @@ module HtmlSelectorsHelpers
         "html > body  #account_management"
       when /the navigation/
         "html > body  #navigation"
+      when /the flash messages/
+        "html > body .flashes"
 
         # Add more mappings here.
         # Here is an example that pulls values out of the Regexp:
