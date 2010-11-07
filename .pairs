@@ -1,13 +1,14 @@
 pairs:
-  mg: Mike Gehard; mikegehard
-  ca: Craig Anderson; CootCraig
-  pm: Prakash Murthy; _prakash
-  pr: Patrick Reagan; reagent
-  ew: Elliot Winkler; mcmire
-  bb: Ben Brinckerhoff; bbrinck 
-  dk: Dave Kapp; happymrdave
-  ra: Ryan Angilly; angilly
-  ba: Ben Atkin; benatkin
+  mg: msehard; mikegehard
+  ca: cootcraig; CootCraig
+  pm: prakashmurthy; _prakash
+  pr: reagent; reagent
+  ew: mcmire; mcmire
+  bb: bhb; bbrinck 
+  dk: davekapp; happymrdave
+  ra: ryana; angilly
+  ba: benatkin; benatkin
+  sl: SeanLuckett; SeanLuckett
 email:
   prefix: pair
   domain: promiscuouspairprogramming.com
