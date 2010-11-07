@@ -10,14 +10,27 @@ describe PairingSession do
     PairingSession.all.should == [first, second]
   end
 
-  it "knows the available pairing sessions" do
-    past        = Factory.build(:pairing_session, :start_at => 1.day.ago, :end_at => (1.day.ago + 1.second))
-    past.save(:validate => false)
+  describe '.available' do
+    it "only includes sessions which are upcoming" do
+      Timecop.freeze Time.local(2010, 1, 1)
+      in_the_past = Factory.create(:pairing_session, :start_at => Time.local(2010, 1, 1))
+      Timecop.freeze Time.local(2010, 1, 2)
+      in_the_present = Factory.create(:pairing_session, :start_at => Time.local(2010, 1, 2))
+      in_the_future = Factory.create(:pairing_session, :start_at => Time.local(2010, 1, 3))
 
-    available   = Factory.create(:pairing_session, :pair => nil)
-    unavailable = Factory.create(:pairing_session, :pair => Factory.create(:user))
-
-    PairingSession.available.should == [available]
+      availables = PairingSession.available
+      availables.should include(in_the_present)
+      availables.should include(in_the_future)
+      availables.should_not include(in_the_past)
+    end
+    it "only includes sessions which are without a pair" do
+      without_a_pair = Factory.create(:pairing_session, :pair => nil)
+      with_a_pair = Factory.create(:pairing_session, :pair => Factory.create(:user))
+      
+      availables = PairingSession.available
+      availables.should include(without_a_pair)
+      availables.should_not include(with_a_pair)
+    end
   end
 
   describe "#not_owned_by" do
@@ -168,8 +181,7 @@ describe PairingSession do
       end
 
       it "should not consider the pairing session that we are editing when looking for time overlap" do
-        new_end_at = @session.end_at - 1.hour
-        @session.end_at = new_end_at
+        # XXX: Is there a better way to test this?
         @session.should be_valid
       end
 

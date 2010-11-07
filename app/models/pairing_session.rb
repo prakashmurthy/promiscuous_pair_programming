@@ -12,10 +12,10 @@ class PairingSession < ActiveRecord::Base
 
   default_scope order(:start_at)
 
-  scope :upcoming, lambda { where("pairing_sessions.start_at >= ?", Time.zone.now) }
+  scope :upcoming, lambda { where("pairing_sessions.start_at >= ?", Time.now) }
   scope :not_owned_by, lambda {|user| where('owner_id != ?', user.id) }
   scope :without_pair, where('pair_id IS NULL')
-  scope :available, upcoming.without_pair
+  scope :available, lambda { upcoming.without_pair }
 
   private
 
