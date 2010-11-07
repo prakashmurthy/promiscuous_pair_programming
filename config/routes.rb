@@ -1,4 +1,4 @@
-PromiscuousPairProgramming::Application.routes.draw do
+PPP::Application.routes.draw do
 
   resources :pairing_sessions do
     member do

@@ -1,4 +1,4 @@
-PromiscuousPairProgramming::Application.configure do
+PPP::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
 
   # The test environment is used exclusively to run your application's
@@ -32,4 +32,8 @@ PromiscuousPairProgramming::Application.configure do
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
+  
+  config.after_initialize do
+    Location.geolocation_disabled = true
+  end
 end

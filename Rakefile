@@ -4,4 +4,4 @@
 require File.expand_path('../config/application', __FILE__)
 require 'rake'
 
-PromiscuousPairProgramming::Application.load_tasks
+PPP::Application.load_tasks
