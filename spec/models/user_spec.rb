@@ -27,14 +27,14 @@ describe User do
     user.full_name.should == "Richard Nixon"
   end
   
-  it "should require a first name to be valid" do
-    user = Factory.build(:user, :first_name => nil)
-    user.should_not be_valid
-  end
-
-  it "should require a last name to be valid" do
-    user = Factory.build(:user, :last_name => nil)
-    user.should_not be_valid
-  end
+#  it "should require a first name to be valid" do
+#    user = Factory.build(:user, :first_name => nil)
+#    user.should_not be_valid
+#  end
+#
+#  it "should require a last name to be valid" do
+#    user = Factory.build(:user, :last_name => nil)
+#    user.should_not be_valid
+#  end
 
 end
