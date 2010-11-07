@@ -22,6 +22,8 @@ module HtmlSelectorsHelpers
         "html > body  #navigation"
       when /the flash messages/
         "html > body .flashes"
+      when /the pairing sessions/
+        "html > body .pairing-sessions"
 
         # Add more mappings here.
         # Here is an example that pulls values out of the Regexp:

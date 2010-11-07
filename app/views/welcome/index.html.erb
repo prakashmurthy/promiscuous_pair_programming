@@ -7,12 +7,7 @@
 <h2>Available Pairing Sessions</h2>
 <% if @pairing_sessions.any? %>
 <ul class="pairing-sessions">
-  <% @pairing_sessions.each do |session| %>
-    <li>
-      Available from <strong><%= session.start_at %></strong> to <strong><%= session.end_at %></strong><br />
-      <span>Posted by: <%= session.owner.email %></span>
-    </li>
-  <% end %>
+  <%= render :partial => "shared/home_pairing_session", :collection => @pairing_sessions %>
 </ul>
 <% end %>
 

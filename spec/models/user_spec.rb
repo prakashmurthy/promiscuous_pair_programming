@@ -21,4 +21,10 @@ describe User do
 
     user.pairing_sessions_as_pair.should == [pairing_session]
   end
+
+  it "returns a full name based on first and last name" do
+    user = Factory.build(:user, :first_name => 'Richard', :last_name => "Nixon")
+    user.full_name.should == "Richard Nixon"
+  end
+
 end
