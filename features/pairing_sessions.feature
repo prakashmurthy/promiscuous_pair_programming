@@ -101,7 +101,7 @@ Feature: Managing pairing sessions
     And I should not see "This is my session" within available pairing sessions
 
   Scenario: I can sign up to be the pair for a pairing session I am not the owner of
-    Given a user "session owner" exists
+    Given a user "session owner" exists with email: "session_owner@test.com"
     And a pairing session exists with owner: user: "session owner", description: "Open session", start_at: "2010-11-12 10:00 AM", end_at: "2010-11-12 11:00 AM"
     And a logged in user exists
     When I go to the pairing sessions page
@@ -111,6 +111,7 @@ Feature: Managing pairing sessions
     And I go to the pairing sessions page
     Then I should not see "Open session" within available pairing sessions
     And I should see "Open session" within sessions I am pairing on
+    And I should see "session_owner@test.com" within sessions I am pairing on
 
   Scenario: I can cancel a pairing session I am not the owner of that I signed up for
     Given a user "session owner" exists
