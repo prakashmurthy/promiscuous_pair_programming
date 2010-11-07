@@ -104,8 +104,11 @@ Feature: Managing pairing sessions
     Given a user "session owner" exists
     And a pairing session exists with owner: user: "session owner", description: "Open session", start_at: "2010-11-12 10:00 AM", end_at: "2010-11-12 11:00 AM"
     And a logged in user exists
-		And I press "I'll pair on this!"
     When I go to the pairing sessions page
+    Then I should see "Open session" within available pairing sessions
+    And I should not see "Open session" within sessions I am pairing on
+		When I press "I'll pair on this!" within available pairing sessions
+    And I go to the pairing sessions page
     Then I should not see "Open session" within available pairing sessions
     And I should see "Open session" within sessions I am pairing on
 

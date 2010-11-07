@@ -16,7 +16,6 @@ class PairingSession < ActiveRecord::Base
   scope :not_owned_by, lambda {|user| where('owner_id != ?', user.id) }
   scope :without_pair, where('pair_id IS NULL')
   scope :available, upcoming.without_pair
-  scope :where_user_is_pair, lambda { |user| where( "pair_id = ?", user.id) }
 
   private
 
@@ -41,7 +40,7 @@ class PairingSession < ActiveRecord::Base
   end
 
   def overlapping_sessions?
-    scope = owner.pairing_sessions.where([
+    scope = owner.owned_pairing_sessions.where([
       "(start_at <= ? AND end_at >= ?) OR (end_at >= ? AND start_at <= ?)", end_at, start_at, start_at, end_at
     ])
     scope = scope.where("id != ?", self.id) unless self.new_record?

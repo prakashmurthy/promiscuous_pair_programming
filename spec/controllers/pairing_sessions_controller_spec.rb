@@ -27,7 +27,7 @@ describe PairingSessionsController do
     describe "without a show_all parameter" do
       it "assigns my pairing_sessions as @pairing_sessions" do
         expected = mock_pairing_session
-        @controller.stub(:current_user) { mock_user(:pairing_sessions => stub(:upcoming => expected)) }
+        @controller.stub(:current_user) { mock_user(:owned_pairing_sessions => stub(:upcoming => expected)) }
         get :index
         assigns(:my_pairing_sessions).should eq(expected)
       end

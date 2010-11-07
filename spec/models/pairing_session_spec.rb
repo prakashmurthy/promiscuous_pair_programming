@@ -40,28 +40,6 @@ describe PairingSession do
     end
   end
   
-  describe "#where_user_is_pair" do
-    it "should only show sessions where the user is the pair" do
-      me = Factory.create(:user)
-      my_friend = Factory.create(:user)
-      my_friends_session_where_I_am_not_pairing_next_week = Factory.create(:pairing_session, :owner => my_friend, :start_at => 7.day.from_now, :end_at => 8.day.from_now)
-      my_friends_session_where_I_am_pairing_in_three_days = Factory.build(:pairing_session, {
-        :owner => my_friend, 
-        :pair => me, 
-        :start_at => 3.day.from_now, 
-        :end_at => 4.day.from_now
-      })
-      my_friends_session_where_I_am_pairing_tomorrow = Factory.build(:pairing_session, {
-        :owner => my_friend,
-        :pair => me
-      })
-      my_friends_session_where_I_am_pairing_in_three_days.save!
-      my_friends_session_where_I_am_pairing_tomorrow.save!
-    
-      PairingSession.where_user_is_pair(me).should == [my_friends_session_where_I_am_pairing_tomorrow, my_friends_session_where_I_am_pairing_in_three_days]
-    end
-  end
-
   describe "associations" do
     it "should have an owner" do
       user = Factory.create(:user)
