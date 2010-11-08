@@ -3,10 +3,11 @@
   <%= link_to "Sign out", destroy_user_session_path %>
 </div>
 <div id="welcome">
-  Hello <%= current_user.email %>
+  Hello <%= current_user.full_name %>
 </div>
 <div id="navigation">
-  <%=link_to "My Sessions", pairing_sessions_path %>
+  <%=link_to "My Sessions", pairing_sessions_path %><br/>
+  <%=link_to "Edit my account", edit_user_registration_path %>
 </div>
 <% else %>
 <div id="account_management">

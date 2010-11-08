@@ -24,6 +24,8 @@ module HtmlSelectorsHelpers
         "html > body .flashes"
       when /the pairing sessions/
         "html > body .pairing-sessions"
+      when /the welcome section/
+        "html > body #welcome"
 
         # Add more mappings here.
         # Here is an example that pulls values out of the Regexp:

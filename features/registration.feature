@@ -12,5 +12,15 @@ Feature: Registering new user for the site
     And I fill in "Password" with "my_password"
     And I fill in "Password confirmation" with "my_password"
     And I press "Sign up"
-    Then I should see "Hello bob@test.com"
+    Then I should see "Hello Bob Test"
     And I should see "New account created."
+
+  Scenario: Editing my account
+    Given a logged in user exists
+    And I follow "Edit my account" within the navigation section
+    And I fill in "First name" with "New"
+    And I fill in "Last name" with "Name"
+    And I fill in "Current password" with "password"
+    And I press "Update"
+    And I should see "You updated your account successfully."
+    Then I should see "Hello New Name" within the welcome section
