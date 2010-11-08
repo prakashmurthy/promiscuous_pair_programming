@@ -52,8 +52,7 @@
     <td><%= pairing_session.end_at %></td>
     <td><%= pairing_session.description %></td>
 	<% pairing_session.pair_id = current_user.id %>
-	<td><%= button_to "Sorry, gotta cancel.", pairing_session_path( :id => pairing_session.id, :pairing_session => { :pair_id => nil } ), 
-		{:method => :put} %></td>
+	<td><%= button_to "Sorry, gotta cancel.", remove_pair_from_pairing_session_path(pairing_session), {:method => :put} %></td>
   </tr>
 <% end %>
 	
@@ -79,8 +78,7 @@
     <td><%= pairing_session.end_at %></td>
     <td><%= pairing_session.description %></td>
 	<% pairing_session.pair_id = current_user.id %>
-	<td><%= button_to "I'll pair on this!", pairing_session_path( :id => pairing_session.id, :pairing_session => { :pair_id => current_user.id } ), 
-		{:method => :put} %></td>
+	<td><%= button_to "I'll pair on this!", set_pair_on_pairing_session_path(pairing_session),	{:method => :put} %></td>
   </tr>
 <% end %>
 </table>

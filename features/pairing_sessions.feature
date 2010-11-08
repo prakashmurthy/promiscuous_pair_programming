@@ -112,8 +112,8 @@ Feature: Managing pairing sessions
     Then I should see "Open session" within available pairing sessions
     And I should not see "Open session" within sessions I am pairing on
 		When I press "I'll pair on this!" within available pairing sessions
-    And I go to the pairing sessions page
     Then I should not see "Open session" within available pairing sessions
+    And I should see "You are the lucky winner."
     And I should see "Open session" within sessions I am pairing on
     And I should see "session_owner@test.com" within sessions I am pairing on
 
@@ -123,7 +123,7 @@ Feature: Managing pairing sessions
 		And a pairing session exists with owner: user: "session owner", pair: the user, description: "Open session", start_at: "2010-11-12 10:00 AM", end_at: "2010-11-12 11:00 AM"
     And I go to the pairing sessions page
 		And I press "Sorry, gotta cancel."
-    When I go to the pairing sessions page
     Then I should not see "Open session" within sessions I am pairing on
+    And I should see "Sorry to see you go."
     And I should see "Open session" within available pairing sessions
 

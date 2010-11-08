@@ -1,6 +1,11 @@
 PromiscuousPairProgramming::Application.routes.draw do
 
-  resources :pairing_sessions
+  resources :pairing_sessions do
+    member do
+      put 'set_pair_on'
+      put 'remove_pair_from'
+    end
+  end
 
   get "welcome/index"
 

@@ -18,6 +18,12 @@ describe PairingSessionsController do
     end
   end
 
+  def mock_owner(stubs={})
+    (@mock_owner ||= mock_model(User).as_null_object).tap do |user|
+      user.stub(stubs) unless stubs.empty?
+    end
+  end
+
   before(:each) do
     @user = Factory.create(:user)
     sign_in @user
@@ -45,34 +51,34 @@ describe PairingSessionsController do
         get :index
         assigns(:my_pairing_sessions).should == [future_session_two, future_session_one] # see above for why in this order
       end
-      
+
       it "@available_pairing_sessions should only include sessions not owned by the current user" do
         user, user2 = Array.new(2) { Factory.create(:user) }
         not_owned_by = Factory.create(:pairing_session, :owner => user2)
-        owned_by = Factory.create(:pairing_session, :owner => user)
+        owned_by     = Factory.create(:pairing_session, :owner => user)
         @controller.stub(:current_user) { user }
         get :index
         assigns(:available_pairing_sessions).should include(not_owned_by)
         assigns(:available_pairing_sessions).should_not include(owned_by)
       end
-      
+
       it "@available_pairing_sessions should only include sessions without a pair" do
         user, user2, user3 = Array.new(3) { Factory.create(:user) }
         without_a_pair = Factory.create(:pairing_session, :owner => user2, :pair => nil)
-        with_a_pair = Factory.create(:pairing_session, :owner => user2, :pair => user3)
+        with_a_pair    = Factory.create(:pairing_session, :owner => user2, :pair => user3)
         @controller.stub(:current_user) { user }
         get :index
         assigns(:available_pairing_sessions).should include(without_a_pair)
         assigns(:available_pairing_sessions).should_not include(with_a_pair)
       end
-      
+
       it "@available_pairing_sessions should exclude sessions in the past" do
         user, user2 = Array.new(2) { Factory.create(:user) }
         Timecop.freeze(2010, 1, 1)
-        in_the_past = Factory.create(:pairing_session, :owner => user2, :start_at => Time.local(2010, 1, 1))
+        in_the_past    = Factory.create(:pairing_session, :owner => user2, :start_at => Time.local(2010, 1, 1))
         Timecop.freeze(2010, 1, 2)
         in_the_present = Factory.create(:pairing_session, :owner => user2, :start_at => Time.local(2010, 1, 2))
-        in_the_future = Factory.create(:pairing_session, :owner => user2, :start_at => Time.local(2010, 1, 3))
+        in_the_future  = Factory.create(:pairing_session, :owner => user2, :start_at => Time.local(2010, 1, 3))
         @controller.stub(:current_user) { user }
         get :index
         assigns(:available_pairing_sessions).should include(in_the_present)
@@ -116,10 +122,39 @@ describe PairingSessionsController do
   end
 
   describe "GET edit" do
-    it "assigns the requested pairing_session as @pairing_session" do
-      PairingSession.stub(:find).with("37") { mock_pairing_session }
-      get :edit, :id => "37"
-      assigns(:pairing_session).should be(mock_pairing_session)
+    describe "when owner matches current user" do
+      before(:each) do
+        @controller.stub(:current_user) { mock_owner }
+        PairingSession.stub(:find).with("37") { mock_pairing_session(:owner => mock_owner) }
+      end
+      it "assigns the requested pairing_session as @pairing_session" do
+        get :edit, :id => "37"
+        assigns(:pairing_session).should be(mock_pairing_session)
+      end
+      it "should return a status of 200" do
+        get :edit, :id => "37"
+        response.status.should == 200
+      end
+      it "should render the edit template" do
+        get :edit, :id => "37"
+        response.should render_template("edit")
+      end
+    end
+
+    describe "when owner does not match current user" do
+      before(:each) do
+        @controller.stub(:current_user) { mock_user }
+        PairingSession.stub(:find).with("37") { mock_pairing_session(:owner => mock_owner) }
+      end
+
+      it "should return a status of 403 (Forbidden)" do
+        get :edit, :id => "37"
+        response.status.should == 403
+      end
+      it "should return the content from public/403.html" do
+        get :edit, :id => "37"
+        response.body.should =~ /You are not authorized to perform this action \(403\)/
+      end
     end
   end
 
@@ -156,44 +191,64 @@ describe PairingSessionsController do
   end
 
   describe "PUT update" do
+    describe "when owner matches current user" do
+      before(:each) do
+        @controller.stub(:current_user) { mock_owner }
+      end
+      describe "with valid params" do
+        before(:each) do
+          PairingSession.should_receive(:find).with("37") { mock_pairing_session(:owner             => mock_owner,
+                                                                                 :update_attributes => true) }
+        end
+        it "updates the requested pairing_session" do
+          mock_pairing_session.should_receive(:update_attributes).with({'these' => 'params'})
+          put :update, :id => "37", :pairing_session => {'these' => 'params'}
+        end
 
-    describe "with valid params" do
-      it "updates the requested pairing_session" do
-        PairingSession.should_receive(:find).with("37") { mock_pairing_session }
-        mock_pairing_session.should_receive(:update_attributes).with({'these' => 'params'})
-        put :update, :id => "37", :pairing_session => {'these' => 'params'}
+        it "assigns the requested pairing_session as @pairing_session" do
+          put :update, :id => "37"
+          assigns(:pairing_session).should be(mock_pairing_session)
+        end
+
+        it "will update the pair_id if specified" do
+          mock_pairing_session.should_receive(:update_attributes).with({'pair_id' => '8'})
+          put :update, :id => "37", :pairing_session => {'pair_id' => '8'}
+        end
+
+        it "redirects to the pairing_session" do
+          put :update, :id => "37"
+          response.should redirect_to(pairing_sessions_path)
+        end
       end
 
-      it "assigns the requested pairing_session as @pairing_session" do
-        PairingSession.stub(:find) { mock_pairing_session(:update_attributes => true) }
-        put :update, :id => "1"
-        assigns(:pairing_session).should be(mock_pairing_session)
-      end
-      
-      it "will update the pair_id if specified" do
-        PairingSession.should_receive(:find).with("37") { mock_pairing_session }
-        mock_pairing_session.should_receive(:update_attributes).with( {'pair_id' => '8'} )
-        put :update, :id => "37", :pairing_session => {'pair_id' => '8'}
-      end
+      describe "with invalid params" do
+        before(:each) do
+          PairingSession.stub(:find) { mock_pairing_session(:owner             => mock_owner,
+                                                            :update_attributes => false) }
+        end
+        it "assigns the pairing_session as @pairing_session" do
+          put :update, :id => "1"
+          assigns(:pairing_session).should be(mock_pairing_session)
+        end
 
-      it "redirects to the pairing_session" do
-        PairingSession.stub(:find) { mock_pairing_session(:update_attributes => true) }
-        put :update, :id => "1"
-        response.should redirect_to(pairing_sessions_path)
+        it "re-renders the 'edit' template" do
+          put :update, :id => "1"
+          response.should render_template("edit")
+        end
       end
     end
-
-    describe "with invalid params" do
-      it "assigns the pairing_session as @pairing_session" do
-        PairingSession.stub(:find) { mock_pairing_session(:update_attributes => false) }
-        put :update, :id => "1"
-        assigns(:pairing_session).should be(mock_pairing_session)
+    describe "when current user is not the owner of the session" do
+      before(:each) do
+        @controller.stub(:current_user) { mock_user }
+        PairingSession.stub(:find).with("37") { mock_pairing_session(:owner => mock_owner) }
       end
-
-      it "re-renders the 'edit' template" do
-        PairingSession.stub(:find) { mock_pairing_session(:update_attributes => false) }
-        put :update, :id => "1"
-        response.should render_template("edit")
+      it "should return a status of 403 (Forbidden)" do
+        put :update, :id => "37"
+        response.status.should == 403
+      end
+      it "should return the content from public/403.html" do
+        put :update, :id => "37"
+        response.body.should =~ /You are not authorized to perform this action \(403\)/
       end
     end
 
@@ -210,6 +265,62 @@ describe PairingSessionsController do
       PairingSession.stub(:find) { mock_pairing_session }
       delete :destroy, :id => "1"
       response.should redirect_to(pairing_sessions_url)
+    end
+  end
+
+  describe "PUT set_pair_on" do
+    describe "with successful update" do
+      before(:each) do
+        PairingSession.stub(:find) { mock_pairing_session(:update_attributes => true) }
+        put :set_pair_on, :id => "1"
+      end
+      it "should set the notice" do
+        flash[:notice].should_not be_empty
+      end
+      it "should redirect to the pairing sessions page" do
+        response.should redirect_to(pairing_sessions_url)
+      end
+    end
+
+    describe "with unsuccessful update" do
+      before(:each) do
+        PairingSession.stub(:find) { mock_pairing_session(:update_attributes => false) }
+        put :set_pair_on, :id => "1"
+      end
+      it "should set the notice" do
+        flash[:alert].should_not be_empty
+      end
+      it "should redirect to the pairing sessions page" do
+        response.should redirect_to(pairing_sessions_url)
+      end
+    end
+  end
+
+  describe "PUT remove_pair_from" do
+    describe "with successful update" do
+      before(:each) do
+        PairingSession.stub(:find) { mock_pairing_session(:update_attributes => true) }
+        put :remove_pair_from, :id => "1"
+      end
+      it "should set the notice" do
+        flash[:notice].should_not be_empty
+      end
+      it "should redirect to the pairing sessions page" do
+        response.should redirect_to(pairing_sessions_url)
+      end
+    end
+
+    describe "with unsuccessful update" do
+      before(:each) do
+        PairingSession.stub(:find) { mock_pairing_session(:update_attributes => false) }
+        put :remove_pair_from, :id => "1"
+      end
+      it "should set the notice" do
+        flash[:alert].should_not be_empty
+      end
+      it "should redirect to the pairing sessions page" do
+        response.should redirect_to(pairing_sessions_url)
+      end
     end
   end
 
