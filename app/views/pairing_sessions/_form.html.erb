@@ -27,7 +27,7 @@
   
   <div class="field">
     <%= f.label :raw_location, "Location" %><br />
-    <%= f.text_field :raw_location, :value => (@pairing_session.raw_location || @pairing_session.location.raw_location) %>
+    <%= f.text_field :raw_location, :value => (@pairing_session.raw_location || @pairing_session.location.try(:raw_location)) %>
   </div>
   
   <div class="field">

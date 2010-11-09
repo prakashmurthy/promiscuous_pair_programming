@@ -37,6 +37,8 @@ describe PairingSessionsController do
         get :index
         assigns(:my_pairing_sessions).should eq(expected)
       end
+      
+      ### TODO: We should really stub these named scopes........
 
       it "sorts pairing_sessions from those starting the soonest to those starting the latest" do
         # need a user with at least two sessions to ensure order
@@ -197,11 +199,12 @@ describe PairingSessionsController do
       end
       describe "with valid params" do
         before(:each) do
-          PairingSession.should_receive(:find).with("37") { mock_pairing_session(:owner             => mock_owner,
-                                                                                 :update_attributes => true) }
+          PairingSession.should_receive(:find).with("37") { mock_pairing_session(:owner => mock_owner,
+                                                                                 :attributes= => nil,
+                                                                                 :save => true) }
         end
         it "updates the requested pairing_session" do
-          mock_pairing_session.should_receive(:update_attributes).with({'these' => 'params'})
+          mock_pairing_session.should_receive(:attributes=).with({'these' => 'params'})
           put :update, :id => "37", :pairing_session => {'these' => 'params'}
         end
 
@@ -211,7 +214,7 @@ describe PairingSessionsController do
         end
 
         it "will update the pair_id if specified" do
-          mock_pairing_session.should_receive(:update_attributes).with({'pair_id' => '8'})
+          mock_pairing_session.should_receive(:attributes=).with({'pair_id' => '8'})
           put :update, :id => "37", :pairing_session => {'pair_id' => '8'}
         end
 
@@ -223,8 +226,9 @@ describe PairingSessionsController do
 
       describe "with invalid params" do
         before(:each) do
-          PairingSession.stub(:find) { mock_pairing_session(:owner             => mock_owner,
-                                                            :update_attributes => false) }
+          PairingSession.stub(:find) { mock_pairing_session(:owner => mock_owner,
+                                                            :attributes= => nil,
+                                                            :save => false) }
         end
         it "assigns the pairing_session as @pairing_session" do
           put :update, :id => "1"

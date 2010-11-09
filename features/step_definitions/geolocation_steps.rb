@@ -6,3 +6,10 @@ Given /^the location of the (?:new )?pairing session will be geolocated as "([^"
     Factory.attributes_for(:location).merge(:raw_location => location)
   }
 end
+
+Given /^(?:my location|the location of the (?:new )user) will be geolocated as "([^"]*)"$/ do |location|
+  User.stub(:geolocation_disabled?) { false }
+  User.stub(:fetch_location_info) {
+    Factory.attributes_for(:location).merge(:raw_location => location)
+  }
+end
