@@ -1,7 +1,4 @@
 class PairingSession < ActiveRecord::Base
-  include PPP::ModelMixins::Geolocation
-  is_geolocatable
-  
   belongs_to :owner, :class_name => "User"
   belongs_to :pair, :class_name => "User"
 
@@ -12,6 +9,10 @@ class PairingSession < ActiveRecord::Base
   validate :no_overlapping_sessions, :if => :timestamps_set?
 
   validate :pair_is_not_owner
+  
+  # Ensure this is listed after existing validations so the validation this introduces goes last
+  include PPP::ModelMixins::Geolocation
+  is_geolocatable
 
   default_scope order(:start_at)
 

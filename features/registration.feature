@@ -17,11 +17,19 @@ Feature: Registering new user for the site
     And I should see "New account created."
 
   Scenario: Editing my account
-    Given a logged in user exists
+    Given I am logged in
     And I follow "Edit my account" within the navigation section
     And I fill in "First name" with "New"
     And I fill in "Last name" with "Name"
-    And I fill in "Current password" with "password"
+    And I fill in "Location (city, state OR zipcode)" with "Boulder, CO"
     And I press "Update"
     And I should see "You updated your account successfully."
     Then I should see "Hello New Name" within the welcome section
+    
+  Scenario: Changing my password
+    Given I am logged in
+    And I follow "Edit my account" within the navigation section
+    And I fill in "New password" with "secret"
+    And I fill in "Confirm new password" with "secret"
+    And I press "Update"
+    And I should see "You updated your account successfully."
