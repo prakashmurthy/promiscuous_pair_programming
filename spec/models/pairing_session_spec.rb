@@ -73,6 +73,7 @@ describe PairingSession do
   end
 
   describe "validations" do
+    it_behaves_like "a location-based model: validations"
 
     it "should require a description" do
       subject.description = ''
@@ -197,4 +198,17 @@ describe PairingSession do
       end
     end
   end
+  
+  context "on create" do
+    it_behaves_like "a location-based model: create/update callbacks"
+    it_behaves_like "a location-based model: create callbacks"
+  end
+  
+  context "on update" do
+    subject { Factory.create(:pairing_session) }
+    it_behaves_like "a location-based model: create/update callbacks"
+    it_behaves_like "a location-based model: update callbacks"
+  end
+  
+  it_behaves_like "a location-based model"
 end
