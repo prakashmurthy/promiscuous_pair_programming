@@ -6,6 +6,10 @@ describe SecureApplicationController do
     def index
       render :text => "hello from index"
     end
+
+    def show
+      raise ::Forbidden403Exception
+    end
   end
 
   it "is an application controller" do
@@ -27,6 +31,13 @@ describe SecureApplicationController do
       get :index
       response.body.should == "hello from index"
     end
-  end
 
+    describe "rendering error pages" do
+      it "should render public/403.html in response to a 403ForbiddenException" do
+        get :show, :id => 1
+        response.status.should == 403
+        response.body.should =~ /You are not authorized to perform this action \(403\)/
+      end
+    end
+  end
 end

@@ -24,7 +24,7 @@ class PairingSessionsController < SecureApplicationController
     if current_user == @pairing_session.owner
       render :edit
     else
-      render :status => 403, :file => Rails.root.join("public", "403.html"), :layout => false
+      raise ::Forbidden403Exception
     end
   end
 
@@ -47,7 +47,7 @@ class PairingSessionsController < SecureApplicationController
         render :edit
       end
     else
-      render :status => 403, :file => Rails.root.join("public", "403.html"), :layout => false
+      raise ::Forbidden403Exception
     end
   end
 
