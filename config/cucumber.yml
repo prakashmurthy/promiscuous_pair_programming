@@ -1,2 +1,2 @@
 default: --format pretty --strict --tags ~@wip features
-wip: --format pretty --strict --tags @wip:3 --wip features
+wip: --format pretty --tags @wip:3 --wip features
