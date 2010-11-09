@@ -3,6 +3,7 @@
 Factory.define :user do |f|
   f.first_name "Richard"
   f.last_name  "Nixon"
+  f.association :location
   f.sequence(:email) {|n| "person#{n}@example.com" }
   f.password 'password'
   f.password_confirmation 'password'

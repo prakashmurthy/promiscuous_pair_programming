@@ -3,6 +3,10 @@ require File.expand_path('../../spec_helper', __FILE__)
 describe PairingSession do
   subject { Factory.build(:pairing_session) }
 
+  it "should have a valid factory" do
+    subject.should be_valid
+  end
+
   it "sorts the sessions by start time by default" do
     second = Factory.create(:pairing_session, :start_at => 1.hour.from_now, :end_at => 2.hours.from_now)
     first  = Factory.create(:pairing_session, :start_at => 30.minutes.from_now, :end_at => 45.minutes.from_now)

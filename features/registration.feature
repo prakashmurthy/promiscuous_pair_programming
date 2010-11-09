@@ -11,6 +11,7 @@ Feature: Registering new user for the site
     And I fill in "Email" with "bob@test.com"
     And I fill in "Password" with "my_password"
     And I fill in "Password confirmation" with "my_password"
+    And I fill in "Location (city, state OR zipcode)" with "Boulder, CO"
     And I press "Sign up"
     Then I should see "Hello Bob Test"
     And I should see "New account created."

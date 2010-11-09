@@ -1,8 +1,10 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :trackable, :rememberable, :token_authenticatable, :confirmable, :lockable and :timeoutable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :validatable
+  devise :database_authenticatable, :registerable, :recoverable, :validatable
+
+  include PPP::ModelMixins::Geolocation
+  is_geolocatable
 
   validates :first_name, :last_name, :presence => true
 

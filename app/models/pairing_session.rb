@@ -1,4 +1,6 @@
 class PairingSession < ActiveRecord::Base
+  attr_accessor :location # for the pairing session form
+  
   belongs_to :owner, :class_name => "User"
   belongs_to :pair, :class_name => "User"
 
@@ -17,8 +19,7 @@ class PairingSession < ActiveRecord::Base
   scope :without_pair, where('pair_id IS NULL')
   scope :available, lambda { upcoming.without_pair }
 
-  private
-
+private
   def starts_in_future
     errors.add(:start_at, "must be in the future") if start_at < Time.now
   end
@@ -47,5 +48,4 @@ class PairingSession < ActiveRecord::Base
 
     scope.count > 0
   end
-
 end

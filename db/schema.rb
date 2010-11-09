@@ -12,14 +12,35 @@
 
 ActiveRecord::Schema.define(:version => 20101107214441) do
 
+  create_table "locations", :force => true do |t|
+    t.float    "lat",              :null => false
+    t.float    "lng",              :null => false
+    t.string   "street_address"
+    t.string   "city",             :null => false
+    t.string   "province",         :null => false
+    t.string   "district"
+    t.string   "state",            :null => false
+    t.string   "zip"
+    t.string   "country",          :null => false
+    t.string   "country_code",     :null => false
+    t.integer  "accuracy",         :null => false
+    t.string   "precision",        :null => false
+    t.string   "suggested_bounds", :null => false
+    t.string   "provider",         :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "pairing_sessions", :force => true do |t|
     t.string   "description"
     t.integer  "owner_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.datetime "start_at",    :null => false
-    t.datetime "end_at",      :null => false
+    t.datetime "start_at",        :null => false
+    t.datetime "end_at",          :null => false
     t.integer  "pair_id"
+    t.integer  "location_id",     :null => false
+    t.string   "location_detail"
   end
 
   create_table "users", :force => true do |t|
@@ -29,6 +50,7 @@ ActiveRecord::Schema.define(:version => 20101107214441) do
     t.string   "reset_password_token"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "location_id",                                         :null => false
     t.string   "first_name"
     t.string   "last_name"
   end

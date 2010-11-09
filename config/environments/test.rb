@@ -34,6 +34,6 @@ PPP::Application.configure do
   config.active_support.deprecation = :stderr
   
   config.after_initialize do
-    Location.geolocation_disabled = true
+    User.geolocation_disabled = true
   end
 end

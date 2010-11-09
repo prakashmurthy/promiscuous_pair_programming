@@ -22,6 +22,16 @@
     <%= f.label :description %><br />
     <%= f.text_area :description %>
   </div>
+  <% if @pairing_session.new_record? %>
+  <div class="field">
+    <%= f.label :location %>
+    <%= f.text_field :location %>
+  </div>
+  <% end %>
+  <div class="field">
+    <%= f.label :location_detail %>
+    <%= f.text_field :location_detail %>
+  </div>
 
   <div class="actions">
     <%= f.submit %>
