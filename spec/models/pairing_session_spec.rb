@@ -70,9 +70,6 @@ describe PairingSession do
 
   describe "validations" do
 
-    it "requires a valid start time"
-    it "requires a valid end time"
-
     it "should require a description" do
       subject.description = ''
       subject.valid?
