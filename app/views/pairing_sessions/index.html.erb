@@ -8,6 +8,7 @@
 	  <th>Start time</th>
 	  <th>End time</th>
     <th>Description</th>
+    <th>Pair</th>
     <th></th>
     <th></th>
     <th></th>
@@ -18,6 +19,7 @@
     <td><%= pairing_session.start_at %></td>
     <td><%= pairing_session.end_at %></td>
     <td><%= pairing_session.description %></td>
+    <td><%= pairing_session.pair ? "Yes" : "No" %></td>
     <td><%= link_to 'Show', pairing_session %></td>
     <td><%= link_to 'Edit', edit_pairing_session_path(pairing_session) %></td>
     <td><%= link_to 'Delete', pairing_session, :confirm => 'Are you sure?', :method => :delete %></td>

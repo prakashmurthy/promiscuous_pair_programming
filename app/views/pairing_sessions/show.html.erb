@@ -15,5 +15,10 @@
   <%= @pairing_session.end_at %>
 </p>
 
+<p>
+  <b>Pair:</b>
+  <%= pair_information_for(@pairing_session.pair) %>
+</p>
+
 <%= link_to 'Edit', edit_pairing_session_path(@pairing_session) %> |
 <%= link_to 'Back', pairing_sessions_path %>
