@@ -201,3 +201,15 @@ end
 Then /^show me the page$/ do
   save_and_open_page
 end
+
+Then /^the table which is (.+) should contain the following content:$/ do |locator, expected_table|
+  sel = selector_for(locator)
+  actual_table = tableish("#{sel} tr", "th, td")
+  # Get rid of new lines in each cell as that isn't important for comparison purposes
+  actual_table.each do |row|
+    row.each do |cell|
+      cell.gsub!(/[ ]*\n+[ ]*/, " ")
+    end
+  end
+  expected_table.diff!(actual_table)
+end

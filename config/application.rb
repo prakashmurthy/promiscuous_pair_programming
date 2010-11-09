@@ -45,5 +45,9 @@ module PPP
       g.test_framework :rspec, :fixture => true, :views => false
       g.fixture_replacement :factory_girl, :dir => "spec/factories"
     end
+    
+    # Add this back to the autoload_paths since apparently it was removed in Rails 3
+    # (See http://stackoverflow.com/questions/4018757/rails3-not-reloading-code-in-lib-while-in-development-mode)
+    config.autoload_paths << Rails.root.join("lib")
   end
 end

@@ -1,6 +1,7 @@
 class PairingSessionsController < SecureApplicationController
 
-  before_filter :assign_pairing_session, :except => [:index, :new, :create]
+  before_filter :build_pairing_session, :only => [:new, :create]
+  before_filter :find_pairing_session, :except => [:index, :new, :create]
 
   def index
     if params[:show_all]
@@ -17,9 +18,17 @@ class PairingSessionsController < SecureApplicationController
   end
 
   def new
-    @pairing_session = PairingSession.new
   end
 
+  def create
+    @pairing_session.enable_geolocation = true
+    if @pairing_session.save
+      redirect_to(pairing_sessions_path, :notice => 'Pairing session was successfully created.')
+    else
+      render :new
+    end
+  end
+  
   def edit
     if current_user == @pairing_session.owner
       render :edit
@@ -28,20 +37,11 @@ class PairingSessionsController < SecureApplicationController
     end
   end
 
-  # TODO: use scoped builder instead of assigning to owner
-  def create
-    @pairing_session       = PairingSession.new(params[:pairing_session])
-    @pairing_session.owner = current_user
-
-    if @pairing_session.save
-      redirect_to(pairing_sessions_path, :notice => 'Pairing session was successfully created.') and return
-    end
-    render :new
-  end
-
   def update
     if current_user == @pairing_session.owner
-      if @pairing_session.update_attributes(params[:pairing_session])
+      @pairing_session.attributes = params[:pairing_session]
+      @pairing_session.enable_geolocation = true
+      if @pairing_session.save
         redirect_to(pairing_sessions_path, :notice => 'Pairing session was successfully updated.')
       else
         render :edit
@@ -72,9 +72,12 @@ class PairingSessionsController < SecureApplicationController
     end
   end
 
-  private
+private
+  def build_pairing_session(attrs={})
+    @pairing_session = current_user.owned_pairing_sessions.build(params[:pairing_session])
+  end
 
-  def assign_pairing_session
+  def find_pairing_session
     @pairing_session = PairingSession.find(params[:id])
   end
 end

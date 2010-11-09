@@ -2,7 +2,6 @@
   <% if @pairing_session.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@pairing_session.errors.count, "error") %> prohibited this pairing_session from being saved:</h2>
-
       <ul>
       <% @pairing_session.errors.full_messages.each do |msg| %>
         <li><%= msg %></li>
@@ -10,26 +9,29 @@
       </ul>
     </div>
   <% end %>
+  
   <div class="field">
     <%= f.label :start_at, "Start Date/Time (Format is yyyy-mm-dd hh:mm am or pm)"  %><br />
     <%= f.text_field :start_at %>
   </div>
+  
   <div class="field">
     <%= f.label :end_at, "End Date/Time (Format is yyyy-mm-dd hh:mm am or pm)" %><br />
     <%= f.text_field :end_at %>
   </div>
+  
   <div class="field">
     <%= f.label :description %><br />
     <%= f.text_area :description %>
   </div>
-  <% if @pairing_session.new_record? %>
+  
   <div class="field">
-    <%= f.label :location %>
-    <%= f.text_field :location %>
+    <%= f.label :raw_location, "Location" %><br />
+    <%= f.text_field :raw_location, :value => (@pairing_session.raw_location || @pairing_session.location.raw_location) %>
   </div>
-  <% end %>
+  
   <div class="field">
-    <%= f.label :location_detail %>
+    <%= f.label :location_detail, "Further details about the location" %><br />
     <%= f.text_field :location_detail %>
   </div>
 

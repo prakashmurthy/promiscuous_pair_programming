@@ -1,4 +1,5 @@
 Factory.define :location do |f|
+  f.raw_location "1521 Pearl St, Boulder, CO, 80302"
   f.lat 40.0189782
   f.lng -105.2753118
   f.street_address "1521 Pearl St"

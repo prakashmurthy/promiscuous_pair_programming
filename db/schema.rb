@@ -10,9 +10,10 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101107214441) do
+ActiveRecord::Schema.define(:version => 20101108000000) do
 
   create_table "locations", :force => true do |t|
+    t.string   "raw_location",     :null => false
     t.float    "lat",              :null => false
     t.float    "lng",              :null => false
     t.string   "street_address"
@@ -50,9 +51,9 @@ ActiveRecord::Schema.define(:version => 20101107214441) do
     t.string   "reset_password_token"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "location_id",                                         :null => false
     t.string   "first_name"
     t.string   "last_name"
+    t.integer  "location_id",                                         :null => false
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

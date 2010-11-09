@@ -5,13 +5,12 @@
 <br/>
 <table id="my_pairing_sessions">
   <tr>
-	  <th>Start time</th>
-	  <th>End time</th>
+    <th>Start time</th>
+    <th>End time</th>
     <th>Description</th>
     <th>Pair</th>
-    <th></th>
-    <th></th>
-    <th></th>
+    <th>Location</th>
+    <th>Actions</th>
   </tr>
 
 <% @my_pairing_sessions.each do |pairing_session| %>
@@ -20,9 +19,12 @@
     <td><%= pairing_session.end_at %></td>
     <td><%= pairing_session.description %></td>
     <td><%= pairing_session.pair ? "Yes" : "No" %></td>
-    <td><%= link_to 'Show', pairing_session %></td>
-    <td><%= link_to 'Edit', edit_pairing_session_path(pairing_session) %></td>
-    <td><%= link_to 'Delete', pairing_session, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= pairing_session.location_detail.presence || pairing_session.location.raw_location %></td>
+    <td>
+      <%= link_to 'Show', pairing_session %> |
+      <%= link_to 'Edit', edit_pairing_session_path(pairing_session) %> |
+      <%= link_to 'Delete', pairing_session, :confirm => 'Are you sure?', :method => :delete %>
+    </td>
   </tr>
 <% end %>
 </table>

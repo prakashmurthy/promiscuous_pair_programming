@@ -11,21 +11,21 @@ module HtmlSelectorsHelpers
       when /the page/
         "html > body"
       when /my pairing sessions/
-        'html > body  #my_pairing_sessions'
+        '#my_pairing_sessions'
       when /available pairing sessions/
-        'html > body  #available_pairing_sessions'
+        '#available_pairing_sessions'
       when /sessions I am pairing on/
-        'html > body  #paired_sessions'
+        '#paired_sessions'
       when /the account management section/
-        "html > body  #account_management"
+        "#account_management"
       when /the navigation/
-        "html > body  #navigation"
+        "#navigation"
       when /the flash messages/
-        "html > body .flashes"
+        ".flashes"
       when /the pairing sessions/
-        "html > body .pairing-sessions"
+        ".pairing-sessions"
       when /the welcome section/
-        "html > body #welcome"
+        "#welcome"
 
         # Add more mappings here.
         # Here is an example that pulls values out of the Regexp:

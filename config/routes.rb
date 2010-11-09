@@ -7,7 +7,7 @@ PPP::Application.routes.draw do
     end
   end
 
-  devise_for :users, :controllers => { :registrations => "registrations" }#, :path_names => { :registration => "" }
+  devise_for :users, :controllers => {:registrations => "registrations"}
 
   get "welcome/index"
 

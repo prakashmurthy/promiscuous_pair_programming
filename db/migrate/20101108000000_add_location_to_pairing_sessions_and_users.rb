@@ -1,6 +1,7 @@
 class AddLocationToPairingSessionsAndUsers < ActiveRecord::Migration
   def self.up
     create_table :locations, :force => true do |t|
+      t.string  :raw_location, :null => false
       t.float   :lat, :null => false
       t.float   :lng, :null => false
       t.string  :street_address#, :null => false

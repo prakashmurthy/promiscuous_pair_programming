@@ -10,5 +10,5 @@ describe Location do
         expect { subject.save }.to raise_error(ActiveRecord::StatementInvalid, /^PGError: ERROR:  null value in column/)
       end
     end
-  end  
+  end 
 end

@@ -1,1 +1,0 @@
-require 'ppp/model_mixins/geolocation'

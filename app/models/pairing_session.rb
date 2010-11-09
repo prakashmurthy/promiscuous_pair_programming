@@ -1,5 +1,6 @@
 class PairingSession < ActiveRecord::Base
-  attr_accessor :location # for the pairing session form
+  include PPP::ModelMixins::Geolocation
+  is_geolocatable
   
   belongs_to :owner, :class_name => "User"
   belongs_to :pair, :class_name => "User"

@@ -1,4 +1,4 @@
-Given /^a logged in user exists$/ do
+Given /^(?:a logged in user exists|I am logged in|I log in)$/ do
   Given('a user exists with email: "bob@test.com", password: "password", password_confirmation: "password"')
   Given('I go to the root page')
   Given('I follow "Sign in"')
