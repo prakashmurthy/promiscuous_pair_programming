@@ -28,13 +28,11 @@ describe User do
   end
   
   context "on create" do
-    it_behaves_like "a location-based model: create/update callbacks"
     it_behaves_like "a location-based model: create callbacks"
   end
   
   context "on update" do
     subject { Factory.create(:user) }
-    it_behaves_like "a location-based model: create/update callbacks"
     it_behaves_like "a location-based model: update callbacks"
   end
   

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101108000000) do
+ActiveRecord::Schema.define(:version => 20101110201512) do
 
   create_table "locations", :force => true do |t|
     t.string   "raw_location",     :null => false
@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(:version => 20101108000000) do
     t.datetime "start_at",        :null => false
     t.datetime "end_at",          :null => false
     t.integer  "pair_id"
-    t.integer  "location_id",     :null => false
+    t.integer  "location_id"
     t.string   "location_detail"
   end
 
@@ -53,7 +53,7 @@ ActiveRecord::Schema.define(:version => 20101108000000) do
     t.datetime "updated_at"
     t.string   "first_name"
     t.string   "last_name"
-    t.integer  "location_id",                                         :null => false
+    t.integer  "location_id"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

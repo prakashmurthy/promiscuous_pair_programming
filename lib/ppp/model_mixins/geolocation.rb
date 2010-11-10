@@ -19,12 +19,12 @@ module PPP
           alias_method :enable_geolocation?, :enable_geolocation
           
           attr_accessor :raw_location
-          validates :location, :presence => true, :if => :enable_geolocation?
+          validates :location, :presence => true, :if => :do_geolocation?
           attr_accessible :raw_location if accessible_attributes.any?
 
           before_save :do_geolocation, :if => :do_geolocation?
           
-          belongs_to :location, :autosave => true
+          belongs_to :location
           # Import methods that allow us to search by radius, etc.
           # Additionally, locations are actually stored in a separate table, but the :through
           # allows us to call User.find_within(50, ...) by reaching into the location association.
@@ -62,9 +62,16 @@ module PPP
             logger.debug attrs.inspect
             location = new_record? ? self.build_location : self.location
             location.attributes = attrs
-          else
-            self.errors.add_to_base("The location you entered couldn't be geolocated for some reason. You might try enter something simpler such as a zip code.")
+            logger.debug "Location is this:"
+            logger.debug location.inspect
+            logger.debug "Saving location..."
+            if location.save
+              logger.debug "Oh, I guess the location is valid."
+              return
+            end
           end
+          self.errors.add(:base, "Sorry, but we couldn't find the location you entered. You might try entering something simpler, such as a zip code.")
+          return false
         end
 
         def do_geolocation?
