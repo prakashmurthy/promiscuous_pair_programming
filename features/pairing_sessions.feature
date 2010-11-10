@@ -39,8 +39,8 @@ Feature: Managing pairing sessions
     And I press "Create Pairing session"
     Then I should see "Pairing session was successfully created."
     And the table which is my pairing sessions should contain the following content:
-    | Start time | End time | Description | Location | Actions |
-    | 2010-11-12 10:00AM | 2010-11-12 01:00PM | Work on RSpec bugs | Boulder, CO | Show \| Edit \| Delete |
+    | Start time | End time | Description | Location | Pair | Actions |
+    | 2010-11-12 10:00AM | 2010-11-12 01:00PM | Work on RSpec bugs | Boulder, CO | No | Show \| Edit \| Delete |
 
   Scenario: Editing an existing pairing session
     Given I am logged in
@@ -55,8 +55,8 @@ Feature: Managing pairing sessions
     And I press "Update Pairing session"
     Then I should see "Pairing session was successfully updated."
     And the table which is my pairing sessions should contain the following content:
-    | Start time | End time | Description | Location | Actions |
-    | 2010-11-13 10:00AM | 2010-11-13 01:00PM | Work on RSpec bugs | Boulder, CO | Show \| Edit \| Delete |
+    | Start time | End time | Description | Location | Pair | Actions |
+    | 2010-11-13 10:00AM | 2010-11-13 01:00PM | Work on RSpec bugs | Boulder, CO | No | Show \| Edit \| Delete |
 
   Scenario: Viewing all my pairing sessions shows me my pairing sessions including those in the past, and they are sorted oldest to newest
     Given a logged in user exists

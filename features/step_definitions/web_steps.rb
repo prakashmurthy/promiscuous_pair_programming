@@ -211,5 +211,6 @@ Then /^the table which is (.+) should contain the following content:$/ do |locat
       cell.gsub!(/[ ]*\n+[ ]*/, " ")
     end
   end
-  expected_table.diff!(actual_table)
+  # Raise error on a surplus column (not sure why false is the default..)
+  expected_table.diff!(actual_table, :surplus_col => true)
 end
