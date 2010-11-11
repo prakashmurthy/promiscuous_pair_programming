@@ -50,6 +50,8 @@ module PPP
     # (See http://stackoverflow.com/questions/4018757/rails3-not-reloading-code-in-lib-while-in-development-mode)
     config.autoload_paths << Rails.root.join("lib")
     
+    config.autoload_paths << Rails.root.join("vendor/require-profiler/lib")
+    
     # Configure Geokit
     config.geokit.geocoders.provider_order = [:google, :yahoo, :us]
   end
