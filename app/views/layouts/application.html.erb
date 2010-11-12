@@ -1,55 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>PromiscuousPairProgramming</title>
-  <%= stylesheet_link_tag :all %>
-	<%= javascript_include_tag :defaults %>
   <%= csrf_meta_tag %>
+  <title>Promiscuous Pair Programming</title>
+  <%= javascript_include_tag "vendor/jquery.min.js", "vendor/jquery.cookie.js" %>
+  <%= javascript_include_tag "lib/ppp", "lib/application" %>
+  <%= stylesheet_link_tag :all %>
 </head>
 <body>
-
 
 <div class="flashes">
   <p class="notice"><%= notice %></p>
   <p class="alert"><%= alert %></p>
 </div>
 
-
-
 <div id="wrapper">
-	<div id="header-wrapper">
-	<div id="header">
-		<div id="logo">
-			<h1><a href="#">Promiscuous Pair Programming   </a></h1>
-		</div>
-	</div>
-	</div>
-	<!-- end #header -->
-	<div id="page">
-	<div id="page-bgtop">
-	<div id="page-bgbtm">
-		<div id="content">
-			<%= yield %>
-		<div style="clear: both;">&nbsp;</div>
-		</div>
-		<!-- end #content -->
-		<div id="sidebar">
-			<ul>
-				<li>
-					<%= render :partial => "shared/navigation"%>
-				</li>
-			</ul>
-		</div>
-		<!-- end #sidebar -->
-		<div style="clear: both;">&nbsp;</div>
-	</div>
-	</div>
-	</div>
-	<!-- end #page -->
+  <div id="header-wrapper">
+  <div id="header">
+    <div id="logo">
+      <h1><a href="#">Promiscuous Pair Programming</a></h1>
+    </div>
+  </div>
+  </div>
+  <!-- end #header -->
+  <div id="page">
+  <div id="page-bgtop">
+  <div id="page-bgbtm">
+    <div id="content">
+      <%= yield %>
+    <div style="clear: both;">&nbsp;</div>
+    </div>
+    <!-- end #content -->
+    <div id="sidebar">
+      <ul>
+        <li>
+          <%= render :partial => "shared/navigation"%>
+        </li>
+      </ul>
+    </div>
+    <!-- end #sidebar -->
+    <div style="clear: both;">&nbsp;</div>
+  </div>
+  </div>
+  </div>
+  <!-- end #page -->
 </div>
-	<div id="footer">
-		<p>Copyright (c) 2010 Promiscuouspairprogramming.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
-	</div>
-	<!-- end #footer -->
+  <div id="footer">
+    <p>Copyright (c) 2010 Promiscuouspairprogramming.com. All rights reserved. Design by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
+  </div>
+  <!-- end #footer -->
 </body>
 </html>

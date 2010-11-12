@@ -3,7 +3,8 @@
   <%= link_to "Sign out", destroy_user_session_path %>
 </div>
 <div id="welcome">
-  Hello <%= current_user.full_name %>
+  Hello <%= current_user.full_name %>!
+  <span id="client-location"></span>
 </div>
 <div id="navigation">
   <%=link_to "My Sessions", pairing_sessions_path %><br/>
