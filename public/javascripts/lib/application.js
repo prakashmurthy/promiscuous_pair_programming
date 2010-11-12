@@ -1,3 +1,5 @@
 (function($) {
-  ppp.ui.showUserLocation();
+  $(function() {
+    ppp.ui.showUserLocation();
+  })
 })(jQuery)
