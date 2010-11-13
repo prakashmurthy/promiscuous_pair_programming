@@ -4,11 +4,11 @@
       showUserLocation: function() {
         ppp.util.getUserCity({
           loading: this.getUserCityLoading,
-          success: this.onGetClientAddress
+          success: this.onGetUserCity
         })
       },
-      onGetUserCity: function(city) {
-        $('#client-location').html("<p>Current city: " + city + ".</p>");
+      onGetUserCity: function(location) {
+        $('#client-location').html("<p>Current city: " + location.city + ", " + location.state + ".</p>");
         var $link = $("<a href='#'>Get my location again!</a>").click(function() {
           ppp.util.getUserCity({
             force: true,
@@ -51,51 +51,27 @@
       function feedFunctionsRight(context/*, functions...*/) {
         var functions = Array.prototype.slice.call(arguments, 1);
         return function() {
-          // feed return value rightward into each successive function
-          // as a stack, layer each successive function on the one before it - the return value bubbles up
-          // in math terms, it looks like f(...) then g(f(...)) then h(g(f(...))), etc.
           var result = functions[0].apply(context, arguments);
           $.each(functions.slice(1), function(i, fn) {
-            if (fn != emptyFunction) result = fn.apply(context, result);
+            if (fn != emptyFunction) result = fn.call(context, result);
           })
           return result;
         }
       }
       
-      /*
-      function wrapEvent(events, event, layer, context) {
-        events = $.extend({}, events); // copy
-        var original = events[event];
-        if (original) {
-          events[event] = feedFunctionsRight(context, original, layer);
-        } else {
-          events[event] = layer;
-        }
-        return events;
-      }
-      
-      function wrapEvents(events, layers, context) {
-        events = $.extend({}, events); // copy
-        $.each(EVENTS, function(i, event) {
-          if (layers[event]) events = wrapEvent(events, event, layers[event], context);
-        })
-        return events;
-      }
-      */
-      
       // Defines a function useful for making a request to a service asynchronously and
       // handling the result of the request in a meaningful way. The function which will
-      // be defined accepts an options object which lets you specify callbacks for four
+      // be defined accepts an 'events' object which lets you specify callbacks for four
       // events:
       //
-      // * loading:     Fired before the request occurs.
-      // * success:     Fired if the request was successful. The callback, if supplied,
-      //                will presumably be given the result of the request.
-      // * error:       Fired if the request was unsuccessful.
-      // * unavailable: Fired if the functionality the service provides is not available.
-      //                Currently only used by the geolocation function (below).
+      // * loading:     Will be fired before the request occurs.
+      // * success:     Will be fired if the request is successful. The callback, if
+      //                supplied, will presumably be given the result of the request.
+      // * error:       Will be fired if the request is unsuccessful.
+      // * unavailable: Will be fired if the functionality you are trying to obtain is not
+      //                available. Currently only used by the geolocation function (below).
       //
-      defineAsyncRequestFunction: function(callback) {
+      function defineAsyncRequestFunction(callback) {
         return function() {
           var args = Array.prototype.slice.call(arguments);
           var options = args.pop();
@@ -104,7 +80,7 @@
           args.push(options);
           callback.apply(this, args);
         }
-      },
+      }
       
       // This function makes sense only in the context of defineAsyncRequestFunction(),
       // above. So read more about that first.
@@ -123,13 +99,12 @@
       // request. The second argument is the request callback itself.
       //
       // It's important to keep in mind that the function that will end up being returned
-      // here (again, this is a factory function) is merely a wrapper for a function that
-      // was defined using defineAsyncRequestFunction(), above. That is, your request
-      // callback is going to receive an 'events' object which represent a set of callbacks.
-      // In your request callback, you're probably going to call some hypothetical other
-      // request function. The point is that since you still have the 'events' object,
-      // you'll need to call events.success somewhere (otherwise the data won't make it
-      // back and get cached).
+      // here is merely a wrapper for a function that was defined using
+      // defineAsyncRequestFunction(), above. That is, your request callback is going to 
+      // receive an 'events' object which represents a set of callbacks. In your request
+      // callback, you're probably going to call some hypothetical other request function.
+      // The point is, since you still have the 'events' object, you'll need to call
+      // events.success somewhere (otherwise the data won't make it back and get cached).
       //
       // This is probably kind of hard to understand, so here's an example. Say we've
       // defined this function:
@@ -156,7 +131,15 @@
       //
       // Notice that we use $.extend to make a duplicate of the events object, and then
       // merge our 'success' callback into it. This is because if there's already, say,
-      // an 'error' event, we don't want to wipe that out.
+      // an 'error' event, we don't want to wipe that out. Since you're going to do this
+      // a lot, there's actually a shortcut:
+      //
+      //   var getCachedLocationFromService = definedCachedRequestFunction("location", function(events) {
+      //     getLocationFromService(success(events, function(data) {
+      //       // do something with the data...
+      //       events.success(data);
+      //     }));
+      //   })
       // 
       function defineCachedRequestFunction(dataKey, request) {
         return function(events) {
@@ -171,7 +154,7 @@
             if (value) {
               value = JSON.parse(value);
               events.success(value);
-              this[property] = value;
+              this[dataKey] = value;
               return;
             }
           }
@@ -179,7 +162,7 @@
           var storeData = (function(self) {
             return function(data) {
               var value = JSON.stringify(data);
-              $.cookie(cookieName, value, {
+              $.cookie(dataKey, value, {
                 expires: 7, // days
                 path: '/'
               });
@@ -197,43 +180,47 @@
       // Reformats the result from the Google Geocoding API into a more palatable form.
       // See: http://groups.google.com/group/google-maps-js-api-v3/msg/ab743b525e0cc841
       //
-      function reformatAddressComponents(result) { 
-        var result2 = {}; 
-        var components = result.address_components;
-        $.each(result.address_components, function(i, component) {
-          $.each(component.types, function(j, type) {
-            result2[type] = component.short_name;
-            result2[type + "_long"] = component.long_name;
+      function reformatAddressComponents(results) { 
+        var results2 = [];
+        $.each(results, function(i, result) {
+          var result2 = {};
+          var components = result.address_components;
+          $.each(result.address_components, function(j, component) {
+            $.each(component.types, function(k, type) {
+              result2[type] = component.short_name;
+              result2[type + "_long"] = component.long_name;
+            })
           })
-        })
-        for (var prop in result) { 
-          if (prop != "address_components") result2[prop] = result[prop]; 
-        } 
-        return result2; 
+          for (var prop in result) { 
+            if (prop != "address_components") result2[prop] = result[prop]; 
+          }
+          results2.push(result2);
+        });
+        return results2;
+      }
+      
+      function success(events, fn) {
+        return $.extend({}, events, {success: fn})
       }
       
       // ==== Public functions ====
       
       return {
-        // Find the user's location, and run it through the Google Geolocation API to
+        // Finds the user's location, and runs it through the Google Geolocation API to
         // find the user's address. Calls the 'success' callback with the city and state.
         //
         getUserCity: defineCachedRequestFunction('userCity', function(events) {
-          var events = $.extend({}, events, {
-            success: function(loc) {
-              var events = $.extend({}, events, {
-                success: function(results) {
-                  results = reformatAddressComponents(results);
-                  var address = results[0];
-                  var city = address.administrative_area_level_2,
-                      state = address.administrative_area_level_1;
-                  events.success({city: city, state: state});
-                }
-              })
-              this.geocodeLocationViaGoogle(loc, events);
-            }
-          });
-          this.geolocateClient(events)
+          var self = this;
+          var origevents = events;
+          this.geolocateClient(success(events, function(loc) {
+            self.geocodeLocationViaGoogle(loc, success(events, function(results) {
+              results = reformatAddressComponents(results);
+              var address = results[0];
+              var city = address.administrative_area_level_2,
+                  state = address.administrative_area_level_1;
+              origevents.success({city: city, state: state});
+            }));
+          }));
         }),
         
         // Lower-level functions
