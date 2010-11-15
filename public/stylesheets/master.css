@@ -11,3 +11,13 @@ div.flashes p.notice {
 	text-align: center;
 	background-color: #fffacd;
 }
+
+.smaller {
+  font-size: 80%;
+}
+
+input, button, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  font-style: inherit;
+}
