@@ -8,5 +8,5 @@ When '$time pass' do |time|
 end
 
 When 'time stands still' do
-  Timecop.freeze Time.now
+  Timecop.freeze Time.zone.now
 end

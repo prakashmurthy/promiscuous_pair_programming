@@ -16,11 +16,11 @@ describe PairingSession do
 
   describe '.available' do
     it "only includes sessions which are upcoming" do
-      Timecop.freeze Time.local(2010, 1, 1)
-      in_the_past = Factory.create(:pairing_session, :start_at => Time.local(2010, 1, 1))
-      Timecop.freeze Time.local(2010, 1, 2)
-      in_the_present = Factory.create(:pairing_session, :start_at => Time.local(2010, 1, 2))
-      in_the_future = Factory.create(:pairing_session, :start_at => Time.local(2010, 1, 3))
+      Timecop.freeze Time.utc(2010, 1, 1)
+      in_the_past = Factory.create(:pairing_session, :start_at => Time.utc(2010, 1, 1))
+      Timecop.freeze Time.utc(2010, 1, 2)
+      in_the_present = Factory.create(:pairing_session, :start_at => Time.utc(2010, 1, 2))
+      in_the_future = Factory.create(:pairing_session, :start_at => Time.utc(2010, 1, 3))
 
       availables = PairingSession.available
       availables.should include(in_the_present)
@@ -83,7 +83,7 @@ describe PairingSession do
     end
 
     it "must have a start time in the future" do
-      subject.start_at = Time.now - 1.second
+      subject.start_at = Time.zone.now - 1.second
       subject.valid?
 
       subject.errors[:start_at].should_not be_nil
@@ -104,8 +104,8 @@ describe PairingSession do
     end
 
     it "requires a end time occurring after the start time" do
-      subject.start_at = (Time.now + 2.seconds)
-      subject.end_at   = (Time.now + 1.second)
+      subject.start_at = (Time.zone.now + 2.seconds)
+      subject.end_at   = (Time.zone.now + 1.second)
 
       subject.valid?
 
