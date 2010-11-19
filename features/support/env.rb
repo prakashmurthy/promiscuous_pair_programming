@@ -4,7 +4,12 @@
 # instead of editing this one. Cucumber will automatically load all features/**/*.rb
 # files.
 
-require 'spork'
+begin
+  require 'spork'
+rescue LoadError => e
+  require 'rubygems'
+  require 'spork'
+end
 
 Spork.prefork do
   ENV["RAILS_ENV"] ||= "test"
@@ -44,6 +49,7 @@ Spork.prefork do
   # subsequent scenarios. If you do this, we recommend you create a Before
   # block that will explicitly put your database in a known state.
   Cucumber::Rails::World.use_transactional_fixtures = true
+  
   # How to clean your database when transactions are turned off. See
   # http://github.com/bmabey/database_cleaner for more info.
   if defined?(ActiveRecord::Base)
@@ -56,5 +62,6 @@ Spork.prefork do
 end
 
 Spork.each_run do
-  # ...
+  puts "Cleaning database..."
+  DatabaseCleaner.clean
 end
