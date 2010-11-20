@@ -128,3 +128,6 @@ Feature: Managing pairing sessions
     Then I should not see "Open session" within sessions I am pairing on
     And I should see "Sorry to see you go."
     And I should see "Open session" within available pairing sessions
+    And 1 email should be delivered to user "session owner"
+    And the email should have subject: "Your pair for Open session has canceled"
+    And the email should have from: "info@promiscuouspairprogramming.com"

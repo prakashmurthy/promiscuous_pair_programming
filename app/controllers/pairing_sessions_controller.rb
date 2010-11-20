@@ -67,6 +67,7 @@ class PairingSessionsController < SecureApplicationController
 
   def remove_pair_from
     if @pairing_session.update_attributes(:pair => nil)
+      UserMailer.pair_cancelled_for_session_email(@pairing_session).deliver
       redirect_to(pairing_sessions_path, :notice => 'Sorry to see you go. Maybe next time.')
     else
       redirect_to(pairing_sessions_path, :alert => "Sorry but I couldn't remove you as the pair for this session.")
