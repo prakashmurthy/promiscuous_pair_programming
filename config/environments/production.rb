@@ -1,4 +1,4 @@
-PPP::Application.configure do
+PromiscuousPairProgramming::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
 
   # The production environment is meant for finished, "live" apps.
@@ -46,4 +46,6 @@ PPP::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
+
+  config.action_mailer.default_url_options = {:host => 'promiscuouspairprogramming.com'}
 end
