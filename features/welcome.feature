@@ -5,6 +5,7 @@ Feature: Display pairing session on the welcome page
 
   Scenario: Display a list of open pairing sessions
     Given a user "pair" exists
+    And the time is 2009-11-01 10:00 AM
     And a user "session owner" exists with first_name: "Session", last_name: "Owner", email: "test@test.com"
     Given the following pairing sessions exist
       | description      | start_at           | end_at             | pair         | owner                 |
