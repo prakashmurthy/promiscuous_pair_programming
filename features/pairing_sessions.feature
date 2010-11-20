@@ -3,6 +3,9 @@ Feature: Managing pairing sessions
   As a logged in user
   I want to be able to manage my pairing sessions.
 
+  Background:
+    Given the time is 2009-11-01 10:00 AM
+
   Scenario: Viewing my pairing sessions only shows me the pairing sessions that I have created
     Given a user "another user" exists
     And a pairing session exists with owner: user: "another user", description: "Help fix a bug"
@@ -16,7 +19,6 @@ Feature: Managing pairing sessions
   Scenario: Viewing my pairing sessions only shows me the pairing sessions in the future
     Given a user "pair" exists with email: "pair@test.com", first_name: "Hello", last_name: "World"
     And a logged in user exists
-    And the time is 2009-11-01 10:00 AM
     And the following pairing sessions exist
       | owner    | description                      | start_at            | end_at             | pair        |
       | the user | Future pairing session with pair | 2010-11-15 10:00 AM | 2010-11-15 11:00AM | user "pair" |
@@ -60,7 +62,6 @@ Feature: Managing pairing sessions
 
   Scenario: Viewing all my pairing sessions shows me my pairing sessions including those in the past, and they are sorted oldest to newest
     Given a logged in user exists
-    And the time is 11/01/2009 10:00 AM
     And a pairing session exists with owner: the user, description: "Topic for future pairing session", start_at: "11/11/2051 10:00 AM", end_at: "11/11/2051 11:00 AM"
     And a pairing session exists with owner: the user, description: "Topic for past pairing session", start_at: "11/11/2009 10:00 AM", end_at: "11/11/2009 11:00 AM"
     And the time is 11/12/2010 10:00 AM
@@ -91,7 +92,6 @@ Feature: Managing pairing sessions
     Given a user "session owner" exists
     And a user "pair" exists
     And a logged in user exists
-    And the time is "2010-01-01 00:00:00"
     And a pairing session exists with owner: user "session owner", description: "Open but past session", start_at: "2010-01-02 10:00 AM", end_at: "2010-01-02 11:00 AM"
     And the time is "2010-01-03 00:00:00"
     And a pairing session exists with owner: user "session owner", description: "Open session", start_at: "2010-01-04 10:00 AM", end_at: "2010-01-04 11:00 AM"
@@ -115,6 +115,9 @@ Feature: Managing pairing sessions
     And I should see "You are the lucky winner."
     And I should see "Open session" within sessions I am pairing on
     And I should see "session_owner@test.com" within sessions I am pairing on
+    And 1 email should be delivered to user "session owner"
+    And the email should have subject: "You have someone to pair with on Open session"
+    And the email should have from: "info@promiscuouspairprogramming.com"
 
   Scenario: I can cancel a pairing session I am not the owner of that I signed up for
     Given a user "session owner" exists

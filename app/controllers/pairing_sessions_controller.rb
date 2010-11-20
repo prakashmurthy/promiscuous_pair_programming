@@ -58,6 +58,7 @@ class PairingSessionsController < SecureApplicationController
 
   def set_pair_on
     if @pairing_session.update_attributes(:pair => current_user)
+      UserMailer.pair_found_for_session_email(@pairing_session).deliver
       redirect_to(pairing_sessions_path, :notice => 'You are the lucky winner. Have a good time.')
     else
       redirect_to(pairing_sessions_path, :alert => "Sorry but I couldn't set you are the pair for this session.")
