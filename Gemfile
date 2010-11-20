@@ -8,6 +8,11 @@ gem "geokit"
 gem "geokit-rails3"
 
 group :development do
+  if RUBY_VERSION < "1.9"
+    gem 'ruby-debug'
+  else
+    gem 'ruby-debug19'
+  end
   gem 'rspec-rails'
   gem 'heroku'
   gem "mongrel", ">= 1.2.0.pre2" # use mongrel instead of webrick for development
