@@ -6,7 +6,7 @@ gem 'devise', '1.1.3'
 gem "escape_utils", '0.1.9'
 gem "geokit-rails3", "0.1.2"
 
-group :development do
+group :test, :development do
   if RUBY_VERSION < "1.9"
     gem 'ruby-debug'
   else
@@ -16,9 +16,6 @@ group :development do
   gem 'rspec-rails'
   gem 'heroku'
   gem "mongrel", ">= 1.2.0.pre2" # use mongrel instead of webrick for development
-end
-
-group :test do
   gem 'rails3-generators'
   gem 'cucumber-rails'
   gem 'pickle'
