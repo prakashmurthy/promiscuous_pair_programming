@@ -31,3 +31,20 @@ class User < ActiveRecord::Base
     update_attributes(params) 
   end
 end
+
+# == Schema Information
+#
+# Table name: users
+#
+#  id                   :integer         not null, primary key
+#  email                :string(255)     default(""), not null
+#  encrypted_password   :string(128)     default(""), not null
+#  password_salt        :string(255)     default(""), not null
+#  reset_password_token :string(255)
+#  created_at           :datetime
+#  updated_at           :datetime
+#  first_name           :string(255)
+#  last_name            :string(255)
+#  location_id          :integer
+#
+

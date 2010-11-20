@@ -13,6 +13,7 @@ group :development do
   else
     gem 'ruby-debug19'
   end
+  gem 'annotate' # print out the table strcuture for models at the top
   gem 'rspec-rails'
   gem 'heroku'
   gem "mongrel", ">= 1.2.0.pre2" # use mongrel instead of webrick for development
