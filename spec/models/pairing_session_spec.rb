@@ -212,3 +212,20 @@ describe PairingSession do
   
   it_behaves_like "a location-based model"
 end
+
+# == Schema Information
+#
+# Table name: pairing_sessions
+#
+#  id              :integer         not null, primary key
+#  description     :string(255)
+#  owner_id        :integer
+#  created_at      :datetime
+#  updated_at      :datetime
+#  start_at        :datetime        not null
+#  end_at          :datetime        not null
+#  pair_id         :integer
+#  location_id     :integer
+#  location_detail :string(255)
+#
+
