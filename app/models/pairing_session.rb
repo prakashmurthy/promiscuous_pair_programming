@@ -1,6 +1,7 @@
 class PairingSession < ActiveRecord::Base
   belongs_to :owner, :class_name => "User"
   belongs_to :pair, :class_name => "User"
+  belongs_to :location
 
   validates :description, :start_at, :end_at, :presence => true
 
@@ -11,8 +12,8 @@ class PairingSession < ActiveRecord::Base
   validate :pair_is_not_owner
   
   # Ensure this is listed after existing validations so the validation this introduces goes last
-  include PPP::ModelMixins::Geolocation
-  is_geolocatable
+  include PPP::ModelMixins::Geocoding
+  auto_geocode_location
 
   default_scope order(:start_at)
 

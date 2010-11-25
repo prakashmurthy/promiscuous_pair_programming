@@ -1,62 +1,57 @@
 shared_examples_for "a location-based model" do
-  it "when generating error messages, aliases raw_location to location" do
-    described_class.stub(:geolocation_disabled?) { false }
+  it "aliases raw_location to location when generating error messages" do
+    subject.stub(:do_geocoding?) { true }
     subject.raw_location = nil
-    subject.enable_geolocation = true
+    subject.enable_geocoding = true
     subject.valid?
     subject.errors.full_messages.should include("Location can't be blank")
   end
 end
 
 shared_examples_for "a location-based model: validations" do
-  it "requires raw_location to be filled in if :enable_geolocation is set to true" do
-    described_class.stub(:geolocation_disabled?) { false }
-    subject.enable_geolocation = true
+  it "requires raw_location to be filled in if :enable_geocoding is set to true" do
+    Location.stub(:geocoding_disabled?) { false }
+    subject.enable_geocoding = true
     subject.raw_location = nil
     subject.should_not be_valid
   end
 
-  it "does not require raw_location to be filled in if :enable_geolocation is set to false" do
-    described_class.stub(:geolocation_disabled?) { false }
-    subject.enable_geolocation = false
+  it "does not require raw_location to be filled in if :enable_geocoding is set to false" do
+    subject.enable_geocoding = false
     subject.raw_location = nil
     subject.should be_valid
   end
   
-  it "does not require raw_location to be filled in if :enable_geolocation is set to true, but #{described_class}.geolocation_disabled is also set to true" do
-    described_class.stub(:geolocation_disabled?) { true }
-    subject.enable_geolocation = true
+  it "does not require raw_location to be filled in if :enable_geocoding is set to true, but Location.geocoding_disabled is also set to true" do
+    Location.stub(:geocoding_disabled?) { true }
+    subject.enable_geocoding = true
     subject.raw_location = nil
     subject.should be_valid
   end
   
-  it "doesn't crash if geolocation is disabled and location_id is not filled in" do
-    subject.enable_geolocation = false
+  it "doesn't crash if geocoding is disabled and location_id is not filled in" do
+    subject.stub(:do_geocoding?) { false }
     subject.location_id = nil
     expect { subject.save }.to_not raise_error(PGError)
   end
 end
 
 shared_examples_for "a location-based model: create/update callbacks" do
-  context "when :enable_geolocation is set to true" do
+  context "when :enable_geocoding is set to true" do
     before do
-      subject.enable_geolocation = true
+      Location.stub(:geocoding_disabled?) { false }
+      subject.enable_geocoding = true
     end
     
-    it "gives the raw_location to Geokit" do
-      described_class.stub(:geolocation_disabled?) { false }
+    it "defers to Location.geocode in order to geocode the location" do
       subject.raw_location = "Boulder, CO"
-      geo = double("geo")
-      stubs = PPP::ModelMixins::Geolocation::GEOLOC_ATTRIBUTES.inject(:success? => true) {|h,a| h[a] = "1"; h }
-      stubs.each {|k,v| geo.stub(k).and_return(v) }
-      Geokit::Geocoders::MultiGeocoder.should_receive(:geocode).with("Boulder, CO") { geo }
+      Location.should_receive(:geocode).with("Boulder, CO") { Factory.attributes_for(:location) }
       subject.save!
     end
     
     it "bails if the location could not be geolocated" do
-      described_class.stub(:geolocation_disabled?) { false }
-      described_class.stub(:fetch_location_info) { nil }
-      subject.raw_location = "salkj"
+      subject.raw_location = "Boulder, CO"
+      Location.stub(:geocode) { nil }
       subject.save.should == false
       subject.errors.full_messages.should include(
         "Sorry, but we couldn't find the location you entered. " + 
@@ -64,11 +59,10 @@ shared_examples_for "a location-based model: create/update callbacks" do
       )
     end
     
-    it "bails if the geocoded response doesn't have enough data to make a valid location" do
-      described_class.stub(:geolocation_disabled?) { false }
-      described_class.stub(:fetch_location_info) do
+    it "also bails if the geocoding data isn't enough to make a valid location" do
+      Location.stub(:geocode) do
         {
-          :raw_location => "salkj",
+          :raw_location => "some location",
           :lat => 40.0189782,
           :lng => -105.2753118,
           :street_address => nil,
@@ -85,7 +79,7 @@ shared_examples_for "a location-based model: create/update callbacks" do
           :provider => "google"
         }
       end
-      subject.raw_location = "salkj"
+      subject.raw_location = "some location"
       subject.save.should == false
       subject.errors.full_messages.should include(
         "Sorry, but we couldn't find the location you entered. " + 
@@ -93,20 +87,20 @@ shared_examples_for "a location-based model: create/update callbacks" do
       )
     end
     
-    it "does not geolocate the location if #{described_class}.geolocation_disabled is also set to true" do
-      described_class.stub(:geolocation_disabled?) { true }
+    it "doesn't even hit the before_save if Location.geocoding_disabled is also set to true" do
+      Location.stub(:geocoding_disabled?) { true }
       subject.should_not_receive(:do_geolocation)
       subject.save!
     end
   end
   
-  context "when :enable_geolocation is set to false" do
+  context "when :enable_geocoding is set to false" do
     before do
-      subject.enable_geolocation = false
+      Location.stub(:geocoding_disabled?) { false }
+      subject.enable_geocoding = false
     end
     
-    it "does not geolocate the location" do
-      described_class.stub(:geolocation_disabled?) { false }
+    it "doesn't even hit the before_save" do
       subject.should_not_receive(:do_geolocation)
       subject.save!
     end
@@ -114,6 +108,7 @@ shared_examples_for "a location-based model: create/update callbacks" do
 end
 
 shared_examples_for "a location-based model: create callbacks" do
+  # UGH this is a hack b/c associations in factories are being saved
   subject do
     if described_class == PairingSession
       Factory.build(:pairing_session, :owner => Factory.create(:user), :location => nil)
@@ -124,14 +119,14 @@ shared_examples_for "a location-based model: create callbacks" do
   
   it_behaves_like "a location-based model: create/update callbacks"
   
-  context "when :enable_geolocation is set to true" do
+  context "when :enable_geocoding is set to true" do
     before do
-      subject.enable_geolocation = true
+      Location.stub(:geocoding_disabled?) { false }
+      subject.enable_geocoding = true
     end
     
     it "makes a new location record using the attributes in the GeoLoc object returned from Geokit" do
-      described_class.stub(:geolocation_disabled?) { false }
-      described_class.stub(:fetch_location_info) do
+      Location.stub(:geocode) do
         {
           :raw_location => "1521 Pearl St, Boulder, CO, 80302",
           :lat => 40.0189782,
@@ -175,14 +170,14 @@ end
 shared_examples_for "a location-based model: update callbacks" do
   it_behaves_like "a location-based model: create/update callbacks"
   
-  context "if :enable_geolocation is set to true" do
+  context "if :enable_geocoding is set to true" do
     before do
-      subject.enable_geolocation = true
+      Location.stub(:geocoding_disabled?) { false }
+      subject.enable_geocoding = true
     end
     
     it "updates the existing location record using the attributes in the GeoLoc object returned from Geokit" do
-      described_class.stub(:geolocation_disabled?) { false }
-      described_class.stub(:fetch_location_info) do
+      Location.stub(:geocode) do
         {
           :raw_location => "1521 Pearl St, Boulder, CO, 80302",
           :lat => 40.0189782,

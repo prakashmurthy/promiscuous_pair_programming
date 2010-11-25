@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
+  
+  include PPP::ControllerMixins::Geolocation
 
   # Override Devise functionality on where to send the user
   # after they have been logged in

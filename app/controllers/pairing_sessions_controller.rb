@@ -4,13 +4,16 @@ class PairingSessionsController < SecureApplicationController
   before_filter :find_pairing_session, :except => [:index, :new, :create]
 
   def index
-    if params[:show_all]
-      @my_pairing_sessions = current_user.owned_pairing_sessions.order(:start_at)
-    else
-      @my_pairing_sessions = current_user.owned_pairing_sessions.upcoming.order(:start_at)
-    end
-    @available_pairing_sessions  = PairingSession.not_owned_by(current_user).without_pair.upcoming
+    self.current_location = params[:location] if params[:location]
+    self.current_radius   = params[:radius]   if params[:radius]
+    
+    @my_pairing_sessions = current_user.owned_pairing_sessions.order(:start_at)
+    @my_pairing_sessions = @my_pairing_sessions.upcoming unless params[:show_all]
     @sessions_user_is_pairing_on = current_user.pairing_sessions_as_pair
+    @available_pairing_sessions = PairingSession.
+      not_owned_by(current_user).without_pair.upcoming.
+      geo_scope(:within => current_radius, :origin => current_location.coordinates).
+      includes(:location)
   end
 
   def show
@@ -21,7 +24,7 @@ class PairingSessionsController < SecureApplicationController
   end
 
   def create
-    @pairing_session.enable_geolocation = true
+    @pairing_session.enable_geocoding = true
     if @pairing_session.save
       redirect_to(pairing_sessions_path, :notice => 'Pairing session was successfully created.')
     else
@@ -40,7 +43,7 @@ class PairingSessionsController < SecureApplicationController
   def update
     if current_user == @pairing_session.owner
       @pairing_session.attributes = params[:pairing_session]
-      @pairing_session.enable_geolocation = true
+      @pairing_session.enable_geocoding = true
       if @pairing_session.save
         redirect_to(pairing_sessions_path, :notice => 'Pairing session was successfully updated.')
       else

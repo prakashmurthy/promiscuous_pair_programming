@@ -33,7 +33,18 @@ PPP::Application.configure do
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
   
-  config.after_initialize do
-    User.geolocation_disabled = true
+  # http://stackoverflow.com/questions/1271788/session-variables-with-cucumber-stories/2450701#2450701
+  stub_remote_ip = Class.new do
+    def initialize(app)
+      @app = app
+    end
+    def call(env)
+      request = ::Rack::Request.new(env)
+      if request.params.has_key?('remote_ip')
+        env["action_dispatch.remote_ip"] = request.params['remote_ip']
+      end
+      @app.call(env)
+    end
   end
+  config.middleware.use(stub_remote_ip)
 end
