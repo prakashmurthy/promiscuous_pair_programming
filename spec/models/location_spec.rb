@@ -4,7 +4,7 @@ describe Location do
   let(:location) { Factory.build(:location) }
   
   describe '.geocode' do
-    it "returns a canned return value if Location.geocoding_disabled is set to true" do
+    it "returns canned data if Location.geocoding_disabled is set to true" do
       Location.stub(:geocoding_disabled?) { true }
       Location.geocode("some location").should == {
         "raw_location" => "1521 Pearl St, Boulder, CO, 80302",
@@ -63,7 +63,7 @@ describe Location do
         :provider => "google"
       }
     end
-    it "dies if geocoding was unsuccessful" do
+    it "returns nil if geocoding was unsuccessful" do
       Location.stub(:geocoding_disabled?) { false }
       (geo = Object.new).stub(:success?) { false }
       Geokit::Geocoders::MultiGeocoder.should_receive(:geocode).with("some location") { geo }

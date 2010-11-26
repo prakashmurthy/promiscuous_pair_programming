@@ -25,11 +25,6 @@
     <%= f.label :password_confirmation, "Confirm password" %><br />
     <%= f.password_field :password_confirmation %>
   </div>
-
-  <div class="field">
-    <%= f.label :raw_location, "Location (city, state OR zipcode)" %><br />
-    <%= f.text_field :raw_location, :value => (@user.raw_location || @user.location.try(:raw_location)) %>
-  </div>
   
   <div class="actions">
     <%= f.submit "Sign up" %>

@@ -4,9 +4,8 @@ module PPP
       extend ActiveSupport::Concern
       
       included do
-        alias :detect_current_location :current_location
         helper_method :current_location, :current_radius
-        
+        #alias :detect_current_location :current_location
         #before_filter :detect_current_location, :if => :user_signed_in?
       end
       

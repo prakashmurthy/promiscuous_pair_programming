@@ -226,4 +226,3 @@ end
 #  location_id     :integer
 #  location_detail :string(255)
 #
-
