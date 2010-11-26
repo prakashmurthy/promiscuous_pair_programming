@@ -1,7 +1,7 @@
 Feature: Display pairing session on the welcome page
-  In order to show non logged in users how much fun we are having
-  As a non-logged in user
-  I want to display pairing sessions to a non-logged in user
+  In order to show non-signed-in users how much fun we are having
+  As a non-signed-in user
+  I want to display pairing sessions to a non-signed-in user
 
   Scenario: Display a list of open pairing sessions
     Given a user "pair" exists

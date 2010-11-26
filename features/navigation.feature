@@ -9,8 +9,8 @@ Feature: Navigation
     And I should see "Create an account"
     And I should see "Sign in"
 
-  Scenario: Viewing the home page as a logged in user
-    Given I am logged in
+  Scenario: Viewing the home page as a signed-in user
+    Given I am signed in
     When I go to the home page
     Then I should see the navigation area
     And I should not see "Create an account"

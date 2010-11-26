@@ -19,7 +19,7 @@ Feature: Registration
     And I should see "New account created."
 
   Scenario: Editing my account
-    Given I am logged in
+    Given I am signed in
     When I follow "Edit my account" within the navigation section
     And I fill in "First name" with "New"
     And I fill in "Last name" with "Name"
@@ -28,7 +28,7 @@ Feature: Registration
     Then I should see "Hello New Name" within the welcome section
     
   Scenario: Changing my password
-    Given I am logged in
+    Given I am signed in
     When I follow "Edit my account" within the navigation section
     And I fill in "New password" with "secret"
     And I fill in "Confirm new password" with "secret"

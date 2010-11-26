@@ -1,10 +1,10 @@
 Feature: Managing pairing sessions
-  As a logged in user
+  As a signed-in user
   I want to be able to manage my pairing sessions
   In order to connect with other developers to pair on some code.
 
   Background:
-    Given I am logged in
+    Given I am signed in
 
   Scenario: The list of my pairing sessions shows only current sessions I've created, sorted oldest to newest
     Given a user "some user" exists
