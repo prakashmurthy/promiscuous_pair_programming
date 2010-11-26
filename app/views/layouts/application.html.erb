@@ -3,7 +3,14 @@
 <head>
   <%= csrf_meta_tag %>
   <title>Promiscuous Pair Programming</title>
-  <%= javascript_include_tag "vendor/jquery.min.js", "vendor/jquery.cookie.js", "vendor/gears_init.js", "http://maps.google.com/maps/api/js?sensor=false", "vendor/json2.js" %>
+  <%= javascript_include_tag *%w(
+    vendor/jquery.min.js
+    vendor/rails.js
+    vendor/jquery.cookie.js
+    vendor/gears_init.js
+    http://maps.google.com/maps/api/js?sensor=false
+    vendor/json2.js
+  ) %>
   <%= javascript_include_tag "lib/ppp", "lib/application" %>
   <%= stylesheet_link_tag :all %>
 </head>
