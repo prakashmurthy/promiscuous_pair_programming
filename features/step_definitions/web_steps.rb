@@ -113,6 +113,14 @@ Then /^(?:|I )should (?:still )?see \/([^\/]*)\/$/ do |regexp|
   end
 end
 
+Then /^(?:|I )should (?:still )?see:$/ do |text|
+  if page.respond_to? :should
+    page.should have_content(text)
+  else
+    assert page.has_content?(text)
+  end
+end
+
 Then /^(?:|I )should (?:not|no longer) see "([^"]*)"$/ do |text|
   if page.respond_to? :should
     page.should have_no_content(text)
