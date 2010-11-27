@@ -1,0 +1,112 @@
+= QueryTrace plugin for Rails
+
+It's nice that ActiveRecord logs the queries that are performed when your actions are executed, 
+since it makes it easy to see when you have serious inefficiencies in your application. The next 
+question, though, is always, "OK, so where are those being run from?" Before QueryTrace, that 
+question could be a real pain to answer, since you'd have to go trawling through your code looking
+for the culprit. Once you have QueryTrace installed, though, your logs won't just tell you that you
+have a problem, they will pinpoint the location of that problem for you.
+
+== Usage
+
+Either install the QueryTrace as a plugin or as a gem. You can enable QueryTrace by setting the
+QUERY_TRACE environment variable like so:
+
+	QUERY_TRACE=true
+
+If you want QueryTrace to always be enabled, create a file in config/initializers, and add the
+following line:
+
+	QueryTrace.enable!
+	
+You can also turn QueryTrace back off at any time:
+
+  QueryTrace.disable!
+
+QueryTrace only outputs traces at the at the DEBUG log level, and honors your log colorization
+settings. By default, it outputs up to 20 lines of stack trace. You can adjust this with the depth
+accessor:
+
+  QueryTrace.depth = 5
+
+== Runtime Toggling of QueryTrace
+
+Starting with version 0.1.0 of QueryTrace, you can toggle tracing on or off without restarting the
+server (thanks to Doug Barth for implementing this). To do so, include QueryTrace in your environment so that
+it loads at server startup; you can use an initializer to set its initial state (on or off). Then just
+send SIGQUIT (CTRL-\) to your server to switch from enabled to disabled and vice versa.
+
+Important note: initializers load after environment.rb, but before environment-specific configuration
+files like development.rb. So make sure you have the QueryTrace gem loaded in environment.rb or 
+the runtime toggling will not work. You can use an initializer to selectively turn it on in
+development:
+
+QueryTrace.enable! if Rails.env.development?   
+
+== Example
+
+Before:
+
+  Schedule Load (0.023687)   SELECT * FROM schedules WHERE (schedules.id = 3) LIMIT 1
+  Resource Load (0.001076)   SELECT * FROM resources WHERE (resources.id = 328) LIMIT 1
+  Schedule Load (0.011488)   SELECT * FROM schedules WHERE (schedules.id = 3) LIMIT 1
+  Resource Load (0.022471)   SELECT * FROM resources WHERE (resources.id = 328) LIMIT 1
+
+
+After:
+
+  Schedule Load (0.023687)   SELECT * FROM schedules WHERE (schedules.id = 3) LIMIT 1
+    app/models/available_work.rb:50:in `study_method'
+    app/helpers/plan_helper.rb:4:in `work_description'
+    app/views/plan/_resource_schedule.rhtml:27:in `_run_rhtml_plan__resource_schedule'
+    app/views/plan/_resource_schedule.rhtml:24:in `_run_rhtml_plan__resource_schedule'
+    app/views/plan/_schedule_listing.rhtml:5:in `_run_rhtml_plan__schedule_listing'
+    app/views/plan/_schedule_listing.rhtml:3:in `_run_rhtml_plan__schedule_listing'
+    app/views/plan/_schedule_listing.rhtml:1:in `_run_rhtml_plan__schedule_listing'
+    app/views/plan/index.rhtml:6:in `_run_rhtml_plan_index'
+    vendor/plugins/textmate_footnotes/lib/textmate_footnotes.rb:60:in `render'
+  Resource Load (0.001076)   SELECT * FROM resources WHERE (resources.id = 328) LIMIT 1
+    app/models/available_work.rb:54:in `div_type'
+    app/helpers/plan_helper.rb:6:in `work_description'
+    app/views/plan/_resource_schedule.rhtml:27:in `_run_rhtml_plan__resource_schedule'
+    app/views/plan/_resource_schedule.rhtml:24:in `_run_rhtml_plan__resource_schedule'
+    app/views/plan/_schedule_listing.rhtml:5:in `_run_rhtml_plan__schedule_listing'
+    app/views/plan/_schedule_listing.rhtml:3:in `_run_rhtml_plan__schedule_listing'
+    app/views/plan/_schedule_listing.rhtml:1:in `_run_rhtml_plan__schedule_listing'
+    app/views/plan/index.rhtml:6:in `_run_rhtml_plan_index'
+    vendor/plugins/textmate_footnotes/lib/textmate_footnotes.rb:60:in `render'
+  Schedule Load (0.011488)   SELECT * FROM schedules WHERE (schedules.id = 3) LIMIT 1
+    app/models/available_work.rb:50:in `study_method'
+    app/helpers/plan_helper.rb:4:in `work_description'
+    app/views/plan/_resource_schedule.rhtml:27:in `_run_rhtml_plan__resource_schedule'
+    app/views/plan/_resource_schedule.rhtml:24:in `_run_rhtml_plan__resource_schedule'
+    app/views/plan/_schedule_listing.rhtml:5:in `_run_rhtml_plan__schedule_listing'
+    app/views/plan/_schedule_listing.rhtml:3:in `_run_rhtml_plan__schedule_listing'
+    app/views/plan/_schedule_listing.rhtml:1:in `_run_rhtml_plan__schedule_listing'
+    app/views/plan/index.rhtml:6:in `_run_rhtml_plan_index'
+    vendor/plugins/textmate_footnotes/lib/textmate_footnotes.rb:60:in `render'
+  Resource Load (0.022471)   SELECT * FROM resources WHERE (resources.id = 328) LIMIT 1
+    app/models/available_work.rb:54:in `div_type'
+    app/helpers/plan_helper.rb:6:in `work_description'
+    app/views/plan/_resource_schedule.rhtml:27:in `_run_rhtml_plan__resource_schedule'
+    app/views/plan/_resource_schedule.rhtml:24:in `_run_rhtml_plan__resource_schedule'
+    app/views/plan/_schedule_listing.rhtml:5:in `_run_rhtml_plan__schedule_listing'
+    app/views/plan/_schedule_listing.rhtml:3:in `_run_rhtml_plan__schedule_listing'
+    app/views/plan/_schedule_listing.rhtml:1:in `_run_rhtml_plan__schedule_listing'
+    app/views/plan/index.rhtml:6:in `_run_rhtml_plan_index'
+    vendor/plugins/textmate_footnotes/lib/textmate_footnotes.rb:60:in `render'
+
+
+== Additional Info
+
+Original Author: Nathaniel Talbott (for Terralien)
+Contact: nathaniel@talbott.ws
+License: MIT
+Home: http://github.com/ntalbott/query_trace/
+Subversion mirror: https://terralien.devguard.com/svn/projects/plugins/query_trace
+
+Current Author: Mike Gunderloy
+Contact: MikeG1@larkfarm.com
+Home: http://github.com/ffmike/query_trace, http://codaset.com/ffmike/query_trace
+
+Copyright (c) 2006 Nathaniel Talbott. All Rights Reserved.

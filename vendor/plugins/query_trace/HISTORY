@@ -1,0 +1,20 @@
+Version 0.0.2 9-Aug-2009
+------------------------
+- Started with the jnicklas gemified fork
+- Pulled in ericworking's patch to use Rails backtrace cleaner
+- Bumped gem version to force rebuild
+
+Version 0.0.3 27-Nov-2009
+-------------------------
+- Various minor cleanups
+- Added Evgeniy Dolzhenko's changes to allow disabling on the fly and setting trace depth
+- Pushed gem to gemcutter
+
+Version 0.1.0 18-Feb-2010
+-------------------------
+- Added QueryTrace.toggle! and QueryTrace.enabled? [Doug Barth]
+- Rails integration for toggling tracing with SIGQUIT (CTRL-\) [Doug Barth]
+
+Version 0.1.1 18-Feb-2010
+-------------------------
+Better example in readme

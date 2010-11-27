@@ -17,14 +17,15 @@ class PairingSession < ActiveRecord::Base
 
   default_scope order(:start_at)
 
-  scope :upcoming, lambda { where("pairing_sessions.start_at >= ?", Time.now) }
+  scope :upcoming, lambda { where("pairing_sessions.start_at >= ?", Time.zone.now) }
   scope :not_owned_by, lambda {|user| where('owner_id != ?', user.id) }
   scope :without_pair, where('pair_id IS NULL')
+  # Have to wrap this in a lambda since .upcoming depends on the current time
   scope :available, lambda { upcoming.without_pair }
 
 private
   def starts_in_future
-    errors.add(:start_at, "must be in the future") if start_at < Time.now
+    errors.add(:start_at, "must be in the future") if start_at < Time.zone.now
   end
 
   def ends_after_start_time

@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+lib = File.expand_path("../../lib", __FILE__)
+$:.unshift(lib) unless $:.include?(lib)
+
+require 'require-profiler'
+
+RequireProfiler.parse_argv(ARGV)
+RequireProfiler.generate_profile_report(true)
