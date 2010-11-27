@@ -23,7 +23,7 @@ Feature: Managing pairing sessions
       | owner    | description                      | start_at            | end_at             | pair        |
       | the user | Future pairing session with pair | 2010-11-15 10:00 AM | 2010-11-15 11:00AM | user "pair" |
       | the user | Topic for past pairing session   | 2010-11-12 10:00 AM | 2010-11-12 11:00AM |             |
-    And the time is 2010-11-13 10:00 AM
+    And the time is "2010-11-13 10:00 AM"
     When I go to the root page
     And I follow "My Sessions" within the navigation
     Then I should see "Future pairing session with pair" within my pairing sessions
@@ -40,9 +40,9 @@ Feature: Managing pairing sessions
     And I fill in "Location" with "Boulder, CO"
     And I press "Create Pairing session"
     Then I should see "Pairing session was successfully created."
-    And the table which is my pairing sessions should contain the following content:
-    | Start time | End time | Description | Location | Pair | Actions |
-    | 2010-11-12 10:00AM | 2010-11-12 01:00PM | Work on RSpec bugs | Boulder, CO | No | Show \| Edit \| Delete |
+    And the "#my_pairing_sessions" table should contain:
+      | Start time | End time | Description | Location | Pair | Actions |
+      | 2010-11-12 10:00AM | 2010-11-12 01:00PM | Work on RSpec bugs | Boulder, CO | No | Show \| Edit \| Delete |
 
   Scenario: Editing an existing pairing session
     Given I am logged in
@@ -56,15 +56,15 @@ Feature: Managing pairing sessions
     And I fill in "Location" with "Boulder, CO"
     And I press "Update Pairing session"
     Then I should see "Pairing session was successfully updated."
-    And the table which is my pairing sessions should contain the following content:
-    | Start time | End time | Description | Location | Pair | Actions |
-    | 2010-11-13 10:00AM | 2010-11-13 01:00PM | Work on RSpec bugs | Boulder, CO | No | Show \| Edit \| Delete |
+    And the "#my_pairing_sessions" table should contain:
+      | Start time | End time | Description | Location | Pair | Actions |
+      | 2010-11-13 10:00AM | 2010-11-13 01:00PM | Work on RSpec bugs | Boulder, CO | No | Show \| Edit \| Delete |
 
   Scenario: Viewing all my pairing sessions shows me my pairing sessions including those in the past, and they are sorted oldest to newest
     Given a logged in user exists
     And a pairing session exists with owner: the user, description: "Topic for future pairing session", start_at: "11/11/2051 10:00 AM", end_at: "11/11/2051 11:00 AM"
     And a pairing session exists with owner: the user, description: "Topic for past pairing session", start_at: "11/11/2009 10:00 AM", end_at: "11/11/2009 11:00 AM"
-    And the time is 11/12/2010 10:00 AM
+    And the time is "11/12/2010 10:00 AM"
     When I go to the root page
     And I follow "My Sessions" within the navigation
     And I follow "Show all sessions, including past ones"

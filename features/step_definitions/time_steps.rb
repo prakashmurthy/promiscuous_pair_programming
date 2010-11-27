@@ -1,7 +1,5 @@
-# just add a gem dependency for Timecop or require it yourself
-
-Given 'the time is $time' do |time|
-  Timecop.freeze Time.parse(time)
+Given /^(?:today is|the time is) "?([^"]*)"?$/ do |time|
+  Timecop.freeze Time.zone.parse(time)
 end
 
 When '$time pass' do |time|

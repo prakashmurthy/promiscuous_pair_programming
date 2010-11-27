@@ -30,62 +30,30 @@ describe PairingSessionsController do
   end
 
   describe "GET index" do
+    ### TODO: We should really stub these named scopes........
+
     describe "without a show_all parameter" do
       it "assigns my pairing_sessions as @pairing_sessions" do
-        expected = mock_pairing_session
-        @controller.stub(:current_user) { mock_user(:owned_pairing_sessions => stub(:upcoming => expected)) }
+        (ordered_pairing_sessions = Object.new).should_receive(:upcoming) { :upcoming_pairing_sessions }
+        (pairing_sessions = Object.new).should_receive(:order).with(:start_at) { ordered_pairing_sessions }
+        (current_user = mock_user).should_receive(:owned_pairing_sessions) { pairing_sessions }
+        controller.stub(:current_user) { current_user }
         get :index
-        assigns(:my_pairing_sessions).should eq(expected)
+        assigns(:my_pairing_sessions).should == :upcoming_pairing_sessions
       end
-      
-      ### TODO: We should really stub these named scopes........
-
+    
       it "sorts pairing_sessions from those starting the soonest to those starting the latest" do
         # need a user with at least two sessions to ensure order
         user               = Factory.create(:user)
         # creating the sessions out of order to make sure that sort is actually working
         future_session_one = Factory.create(:pairing_session, {:owner => user, :start_at => 2.days.from_now, :end_at => 3.days.from_now})
         future_session_two = Factory.create(:pairing_session, {:owner => user}) # default one from factory is in the future starting one day from now
-
+    
         # okay, now we just need to make sure we have the user as the current one
         @controller.stub(:current_user) { user }
         # now we should get both sessions back if we view all sessions
         get :index
         assigns(:my_pairing_sessions).should == [future_session_two, future_session_one] # see above for why in this order
-      end
-
-      it "@available_pairing_sessions should only include sessions not owned by the current user" do
-        user, user2 = Array.new(2) { Factory.create(:user) }
-        not_owned_by = Factory.create(:pairing_session, :owner => user2)
-        owned_by     = Factory.create(:pairing_session, :owner => user)
-        @controller.stub(:current_user) { user }
-        get :index
-        assigns(:available_pairing_sessions).should include(not_owned_by)
-        assigns(:available_pairing_sessions).should_not include(owned_by)
-      end
-
-      it "@available_pairing_sessions should only include sessions without a pair" do
-        user, user2, user3 = Array.new(3) { Factory.create(:user) }
-        without_a_pair = Factory.create(:pairing_session, :owner => user2, :pair => nil)
-        with_a_pair    = Factory.create(:pairing_session, :owner => user2, :pair => user3)
-        @controller.stub(:current_user) { user }
-        get :index
-        assigns(:available_pairing_sessions).should include(without_a_pair)
-        assigns(:available_pairing_sessions).should_not include(with_a_pair)
-      end
-
-      it "@available_pairing_sessions should exclude sessions in the past" do
-        user, user2 = Array.new(2) { Factory.create(:user) }
-        Timecop.freeze(2010, 1, 1)
-        in_the_past    = Factory.create(:pairing_session, :owner => user2, :start_at => Time.local(2010, 1, 1))
-        Timecop.freeze(2010, 1, 2)
-        in_the_present = Factory.create(:pairing_session, :owner => user2, :start_at => Time.local(2010, 1, 2))
-        in_the_future  = Factory.create(:pairing_session, :owner => user2, :start_at => Time.local(2010, 1, 3))
-        @controller.stub(:current_user) { user }
-        get :index
-        assigns(:available_pairing_sessions).should include(in_the_present)
-        assigns(:available_pairing_sessions).should include(in_the_future)
-        assigns(:available_pairing_sessions).should_not include(in_the_past)
       end
     end
     describe "with a show_all parameter" do
@@ -97,13 +65,64 @@ describe PairingSessionsController do
         past_session   = Factory.build(:pairing_session, {:start_at    => 2.days.ago, :end_at => 1.day.ago,
                                                           :description => "Session in the past", :owner => user})
         past_session.save(:validate => false) # otherwise we can't create one in the past
-
+    
         # okay, now we just need to make sure we have the user as the current one
         @controller.stub(:current_user) { user }
         # now we should get both sessions back if we view all sessions
         get :index, :show_all => true
         assigns(:my_pairing_sessions).should == [past_session, future_session]
       end
+    end
+    
+    it "stores params[:location] in session if it's present" do
+      current_user = mock_user
+      controller.stub(:current_user) { current_user }
+      controller.stub_chain("current_location.coordinates") { "39.39023, -109.390293" }
+      
+      controller.should_receive(:current_location=).with("location")
+      get :index, :location => "location"
+    end
+    it "doesn't store params[:location] in session if it's not present" do
+      current_user = mock_user
+      controller.stub(:current_user) { current_user }
+      controller.stub_chain("current_location.coordinates") { "39.39023, -109.390293" }
+      
+      controller.should_not_receive(:current_location=)
+      get :index
+    end
+    
+    it "stores params[:radius] in session if it's present" do
+      current_user = mock_user
+      controller.stub(:current_user) { current_user }
+      controller.stub(:current_radius) { 10 }
+      
+      controller.should_receive(:current_radius=).with("radius")
+      get :index, :radius => "radius"
+    end
+    it "doesn't store params[:radius] in session if it's not present" do
+      current_user = mock_user
+      controller.stub(:current_user) { current_user }
+      controller.stub(:current_radius) { 10 }
+      
+      controller.should_not_receive(:current_radius=)
+      get :index
+    end
+    
+    it "sets @available_pairing_sessions to the available pairing sessions" do
+      current_user = mock_user
+      controller.stub(:current_user) { current_user }
+      controller.stub(:current_radius) { 10 }
+      controller.stub_chain("current_location.coordinates") { "39.39023, -109.390293" }
+      
+      (geo_scope = Object.new).should_receive(:includes).with(:location) { :available_pairing_sessions }
+      (upcoming = Object.new).should_receive(:geo_scope).with(:within => 10, :origin => "39.39023, -109.390293") { geo_scope }
+      (without_pair = Object.new).should_receive(:upcoming) { upcoming }
+      (not_owned_by = Object.new).should_receive(:without_pair) { without_pair }
+      PairingSession.should_receive(:not_owned_by).with(current_user) { not_owned_by }
+      
+      get :index
+      
+      assigns(:available_pairing_sessions).should == :available_pairing_sessions
     end
   end
 

@@ -18,11 +18,6 @@
     <%= f.text_field :email %>
   </div>
 
-  <div class="field">
-    <%= f.label :raw_location, "Location (city, state OR zipcode)" %><br />
-    <%= f.text_field :raw_location, :value => (@user.raw_location || @user.location.raw_location) %>
-  </div>
-
   <h3>Change Password</h3>
 
   <p>Leave these fields blank if you don't want to change your password.</p>

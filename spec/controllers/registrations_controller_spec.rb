@@ -22,7 +22,7 @@ describe ::RegistrationsController do
   
   describe "POST create" do
     describe "with valid params" do
-      # TODO: Figure out how to assert that the :enable_geolocation attribute is set on the user
+      # TODO: Figure out how to assert that the :enable_geocoding attribute is set on the user
       # May have to use RR here...
       
       it "assigns a newly created user as @user" do

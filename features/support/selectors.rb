@@ -22,6 +22,8 @@ module HtmlSelectorsHelpers
         "#navigation"
       when /the flash messages/
         ".flashes"
+      when /the pairing sessions form/
+        '#pairing_sessions_form'
       when /the pairing sessions/
         ".pairing-sessions"
       when /the welcome section/
@@ -33,9 +35,13 @@ module HtmlSelectorsHelpers
         #  when /the (notice|error|info) flash/
         #    ".flash.#{$1}"
 
+      #else
+      #  raise "Can't find mapping from \"#{locator}\" to a selector.\n" +
+      #            "Now, go and add a mapping in #{__FILE__}"
+      
       else
-        raise "Can't find mapping from \"#{locator}\" to a selector.\n" +
-                  "Now, go and add a mapping in #{__FILE__}"
+        # Allow straight CSS as the locator
+        locator
     end
   end
 end

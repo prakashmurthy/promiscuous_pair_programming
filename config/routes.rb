@@ -1,6 +1,9 @@
 PPP::Application.routes.draw do
 
   resources :pairing_sessions do
+    collection do
+      get 'search', :action => 'index'
+    end
     member do
       put 'set_pair_on'
       put 'remove_pair_from'

@@ -8,14 +8,15 @@ class User < ActiveRecord::Base
 
   has_many :owned_pairing_sessions, :class_name => "PairingSession", :foreign_key => :owner_id
   has_many :pairing_sessions_as_pair, :class_name => "PairingSession", :foreign_key => :pair_id
+  belongs_to :location
 
   validates :first_name, :last_name, :presence => true
 
   # Ensure this is listed after existing validations so the validation this introduces goes last
   # Also ensure this is below the attr_accessible above since this will add raw_location
   # to the accessible attributes if any are present
-  include PPP::ModelMixins::Geolocation
-  is_geolocatable
+  include PPP::ModelMixins::Geocoding
+  auto_geocode_location
 
   def full_name
     "#{first_name} #{last_name}"

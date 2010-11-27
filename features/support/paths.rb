@@ -35,12 +35,16 @@ module NavigationHelpers
       begin
         page_name =~ /the (.*) page/
         path_components = $1.split(/\s+/)
-        self.send(path_components.push('path').join('_').to_sym)
+        self.send(path_components.push('path').join('_').to_sym, params_for_next_url)
       rescue Object => e
         raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
           "Now, go and add a mapping in #{__FILE__}"
       end
     end
+  end
+  
+  def params_for_next_url
+    @params_for_next_url ||= {}
   end
 end
 

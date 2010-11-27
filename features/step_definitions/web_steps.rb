@@ -17,21 +17,22 @@ end
 World(WithinHelpers)
 
 # Single-line step scoper
-When /^(.*) within ([^:]+)$/ do |step, parent|
+When /^(.*) within "?([^:"]*)"?$/ do |step, parent|
   with_scope(parent) { When step }
 end
 
 # Multi-line step scoper
-When /^(.*) within ([^:]+):$/ do |step, parent, table_or_string|
+When /^(.*) within "?([^:"]*)"?:$/ do |step, parent, table_or_string|
   with_scope(parent) { When "#{step}:", table_or_string }
 end
 
-Given /^(?:|I )am on (.+)$/ do |page_name|
+Given /^(?:|I )(?:am on|go to|visit) (.+)$/ do |page_name|
   visit path_to(page_name)
+  @params_for_next_url = {}
 end
 
-When /^(?:|I )go to (.+)$/ do |page_name|
-  visit path_to(page_name)
+When /^I reload the page$/ do
+  visit current_url
 end
 
 When /^(?:|I )press "([^"]*)"$/ do |button|
@@ -130,7 +131,7 @@ Then /^(?:|I )should not see \/([^\/]*)\/$/ do |regexp|
   end
 end
 
-Then /^the "([^"]*)" field(?: within (.*))? should contain "([^"]*)"$/ do |field, parent, value|
+Then /^the "([^"]*)" field(?: within "?([^:"]*)"?)? should contain "([^"]*)"$/ do |field, parent, value|
   with_scope(parent) do
     field = find_field(field)
     field_value = (field.tag_name == 'textarea') ? field.text : field.value
@@ -142,7 +143,7 @@ Then /^the "([^"]*)" field(?: within (.*))? should contain "([^"]*)"$/ do |field
   end
 end
 
-Then /^the "([^"]*)" field(?: within (.*))? should not contain "([^"]*)"$/ do |field, parent, value|
+Then /^the "([^"]*)" field(?: within "?([^:"]*)"?)? should not contain "([^"]*)"$/ do |field, parent, value|
   with_scope(parent) do
     field = find_field(field)
     field_value = (field.tag_name == 'textarea') ? field.text : field.value
@@ -154,7 +155,7 @@ Then /^the "([^"]*)" field(?: within (.*))? should not contain "([^"]*)"$/ do |f
   end
 end
 
-Then /^the "([^"]*)" checkbox(?: within (.*))? should be checked$/ do |label, parent|
+Then /^the "([^"]*)" checkbox(?: within "?([^:"]*)"?)? should be checked$/ do |label, parent|
   with_scope(parent) do
     field_checked = find_field(label)['checked']
     if field_checked.respond_to? :should
@@ -165,7 +166,7 @@ Then /^the "([^"]*)" checkbox(?: within (.*))? should be checked$/ do |label, pa
   end
 end
 
-Then /^the "([^"]*)" checkbox(?: within (.*))? should not be checked$/ do |label, parent|
+Then /^the "([^"]*)" checkbox(?: within "?([^:"]*)"?)? should not be checked$/ do |label, parent|
   with_scope(parent) do
     field_checked = find_field(label)['checked']
     if field_checked.respond_to? :should
@@ -176,7 +177,19 @@ Then /^the "([^"]*)" checkbox(?: within (.*))? should not be checked$/ do |label
   end
 end
 
-Then /^(?:|I )should be on (.+)$/ do |page_name|
+Then /^the "([^"]*)" table should contain:$/ do |sel, expected_table|
+  actual_table = tableish("#{sel} tr", "th, td")
+  # Get rid of new lines in each cell as that isn't important for comparison purposes
+  actual_table.each do |row|
+    row.each do |cell|
+      cell.gsub!(/[ ]*\n+[ ]*/, " ")
+    end
+  end
+  # Raise error on a surplus column (not sure why false is the default..)
+  expected_table.diff!(actual_table, :surplus_col => true)
+end
+
+Then /^(?:|I )should (?:still )?be on (.+)$/ do |page_name|
   current_path = URI.parse(current_url).path
   if current_path.respond_to? :should
     current_path.should == path_to(page_name)
@@ -200,17 +213,4 @@ end
 
 Then /^show me the page$/ do
   save_and_open_page
-end
-
-Then /^the table which is (.+) should contain the following content:$/ do |locator, expected_table|
-  sel = selector_for(locator)
-  actual_table = tableish("#{sel} tr", "th, td")
-  # Get rid of new lines in each cell as that isn't important for comparison purposes
-  actual_table.each do |row|
-    row.each do |cell|
-      cell.gsub!(/[ ]*\n+[ ]*/, " ")
-    end
-  end
-  # Raise error on a surplus column (not sure why false is the default..)
-  expected_table.diff!(actual_table, :surplus_col => true)
 end

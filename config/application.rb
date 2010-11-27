@@ -31,7 +31,7 @@ module PPP
     # config.i18n.default_locale = :de
 
     # JavaScript files you want as :defaults (application.js is always included).
-    config.action_view.javascript_expansions[:defaults] = %w(jquery.min rails)
+    config.action_view.javascript_expansions[:defaults] = %w(vendor/jquery.min.js vendor/rails)
 
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding                          = "utf-8"
@@ -49,5 +49,8 @@ module PPP
     # Add this back to the autoload_paths since apparently it was removed in Rails 3
     # (See http://stackoverflow.com/questions/4018757/rails3-not-reloading-code-in-lib-while-in-development-mode)
     config.autoload_paths << Rails.root.join("lib")
+    
+    # Configure Geokit
+    config.geokit.geocoders.provider_order = [:google, :yahoo, :us]
   end
 end

@@ -12,7 +12,7 @@ group :test, :development do
   else
     gem 'ruby-debug19'
   end
-  gem 'annotate' # print out the table strcuture for models at the top
+  gem 'annotate' # print out the table structure for models at the top
   gem 'rspec-rails'
   gem 'heroku'
   gem "mongrel", ">= 1.2.0.pre2" # use mongrel instead of webrick for development
@@ -24,5 +24,6 @@ group :test, :development do
   gem 'thin' # this will speed up your cucumber @javascript tests by a lot
   gem 'factory_girl_rails', :git => 'git://github.com/msgehard/factory_girl_rails.git'
   gem 'database_cleaner'
-  gem 'timecop'	
+  gem 'timecop'
+  #gem 'jasmine'
 end
