@@ -41,8 +41,8 @@ Feature: Managing pairing sessions
     And I press "Create Pairing session"
     Then I should see "Pairing session was successfully created."
     And the "#my_pairing_sessions" table should contain:
-      | Start time | End time | Description | Location | Pair | Actions |
-      | 2010-11-12 10:00AM | 2010-11-12 01:00PM | Work on RSpec bugs | Boulder, CO | No | Show \| Edit \| Delete |
+      | Start time         | End time           | Description        | Location    | Pair | Actions                |
+      | 2010-11-12 10:00AM | 2010-11-12 01:00PM | Work on RSpec bugs | Boulder, CO | No   | Show \| Edit \| Delete |
 
   Scenario: Editing an existing pairing session
     Given I am logged in
@@ -57,8 +57,8 @@ Feature: Managing pairing sessions
     And I press "Update Pairing session"
     Then I should see "Pairing session was successfully updated."
     And the "#my_pairing_sessions" table should contain:
-      | Start time | End time | Description | Location | Pair | Actions |
-      | 2010-11-13 10:00AM | 2010-11-13 01:00PM | Work on RSpec bugs | Boulder, CO | No | Show \| Edit \| Delete |
+      | Start time         | End time           | Description        | Location    | Pair | Actions                |
+      | 2010-11-13 10:00AM | 2010-11-13 01:00PM | Work on RSpec bugs | Boulder, CO | No   | Show \| Edit \| Delete |
 
   Scenario: Viewing all my pairing sessions shows me my pairing sessions including those in the past, and they are sorted oldest to newest
     Given a logged in user exists
@@ -72,7 +72,7 @@ Feature: Managing pairing sessions
     And I should see "Topic for past pairing session" within my pairing sessions
 
   @javascript
-  Scenario: Delete a pairing session
+  Scenario: Delete a pairing session asks you to confirm the deletion
     Given a logged in user exists
     And a pairing session exists with owner: the user, description: "Help fix a bug"
     When I go to the pairing sessions page
@@ -87,6 +87,31 @@ Feature: Managing pairing sessions
     And I follow "Delete" within my pairing sessions
     Then I should see "Pairing session was successfully deleted."
     And I should not see "Help fix a bug"
+
+  Scenario: When I delete a pairing session that I own, without a pair, the session is removed
+  from the system
+    Given a logged in user exists
+    And a pairing session exists with owner: the user, description: "Help fix a bug"
+    When I go to the pairing sessions page
+    Then I should see "Help fix a bug" within my pairing sessions
+
+    When I follow "Delete" within my pairing sessions
+    Then I should not see "Help fix a bug" within my pairing sessions
+    And a pairing session should not exist with description: "Help fix a bug"
+
+  Scenario: When I delete a pairing session that I own, with a pair, the session
+  is removed from the system
+    Given a user "pair" exists
+    And a logged in user exists
+    And the following pairing sessions exist
+      | owner    | description                 | start_at            | end_at             | pair        |
+      | the user | Pairing session with a pair | 2010-11-15 10:00 AM | 2010-11-15 11:00AM | user "pair" |
+    When I go to the pairing sessions page
+    Then I should see "Pairing session with a pair" within my pairing sessions
+    When I follow "Delete" within my pairing sessions
+    Then I should not see "Pairing session with a pair" within my pairing sessions
+    And a pairing session should not exist with description: "Pairing session with a pair"
+
 
   Scenario: Viewing a list of pairing sessions I can pair on should exclude past sessions
     Given a user "session owner" exists
