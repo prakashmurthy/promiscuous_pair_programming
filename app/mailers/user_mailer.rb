@@ -10,4 +10,9 @@ class UserMailer < ActionMailer::Base
     mail(:to      => session.owner.email,
          :subject => "Your pair for #{session.description} has canceled")
   end
+
+  def session_cancelled_email(session)
+    mail(:to      => session.pair.email,
+         :subject => "The pairing session #{session.description} has been canceled")
+  end
 end

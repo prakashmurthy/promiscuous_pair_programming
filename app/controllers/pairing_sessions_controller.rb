@@ -56,6 +56,7 @@ class PairingSessionsController < SecureApplicationController
 
   def destroy
     @pairing_session.destroy
+    UserMailer.session_cancelled_email(@pairing_session).deliver if @pairing_session.pair.present?
     redirect_to(pairing_sessions_url, :notice => 'Pairing session was successfully deleted.')
   end
 

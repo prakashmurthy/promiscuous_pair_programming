@@ -89,7 +89,7 @@ Feature: Managing pairing sessions
     And I should not see "Help fix a bug"
 
   Scenario: When I delete a pairing session that I own, without a pair, the session is removed
-  from the system
+  from the system and no email is sent out
     Given a logged in user exists
     And a pairing session exists with owner: the user, description: "Help fix a bug"
     When I go to the pairing sessions page
@@ -98,9 +98,10 @@ Feature: Managing pairing sessions
     When I follow "Delete" within my pairing sessions
     Then I should not see "Help fix a bug" within my pairing sessions
     And a pairing session should not exist with description: "Help fix a bug"
+    And 0 emails should be delivered
 
   Scenario: When I delete a pairing session that I own, with a pair, the session
-  is removed from the system
+  is removed from the system and the pair is alerted via email
     Given a user "pair" exists
     And a logged in user exists
     And the following pairing sessions exist
@@ -111,6 +112,9 @@ Feature: Managing pairing sessions
     When I follow "Delete" within my pairing sessions
     Then I should not see "Pairing session with a pair" within my pairing sessions
     And a pairing session should not exist with description: "Pairing session with a pair"
+    And 1 email should be delivered to user "pair"
+    And the email should have subject: "The pairing session Pairing session with a pair has been canceled"
+    And the email should have from: "info@promiscuouspairprogramming.com"
 
 
   Scenario: Viewing a list of pairing sessions I can pair on should exclude past sessions
