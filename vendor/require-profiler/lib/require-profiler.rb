@@ -84,13 +84,6 @@
 require 'benchmark'
 require 'yaml'
 require 'set'
-begin
-  require 'term/ansicolor'
-rescue LoadError
-  raise "\n\nYou need to install the term-ansicolor gem to see colorized reports.\n\n"
-end
-String.class_eval { include Term::ANSIColor }
-Term::ANSIColor.coloring = true
 
 module RequireProfiler
   class << self
@@ -103,6 +96,16 @@ module RequireProfiler
     end
     attr_writer :options
     
+    def colorize_strings
+      begin
+        require 'term/ansicolor'
+      rescue LoadError
+        raise "\n\nYou need to install the term-ansicolor gem to see colorized reports.\n\n"
+      end
+      String.class_eval { include Term::ANSIColor }
+      Term::ANSIColor.coloring = true
+    end
+    
     def profile(tmp_options={}, &block)
       current_options = options
       @options = tmp_options
@@ -114,6 +117,7 @@ module RequireProfiler
     
     def start(tmp_options={})
       return unless ENV["PROFILE"] or $PROFILE
+      colorize_strings
       @start_time = Time.now
       [ ::Kernel, (class << ::Kernel; self; end) ].each do |klass|
         klass.class_eval do
