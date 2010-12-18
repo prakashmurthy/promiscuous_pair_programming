@@ -16,14 +16,14 @@ describe SecureApplicationController do
     @controller.is_a?(ApplicationController).should be_true
   end
 
-  describe "without being logged in" do
-    it "should redirect to the login page" do
+  describe "without being signed in" do
+    it "should redirect to the sign-in page" do
       get :index
       response.should redirect_to('/users/sign_in')
     end
   end
 
-  describe "with being logged in" do
+  describe "with being signed in" do
     before(:each) do
       sign_in Factory.create(:user)
     end

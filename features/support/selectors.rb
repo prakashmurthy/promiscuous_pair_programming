@@ -40,7 +40,7 @@ module HtmlSelectorsHelpers
       #            "Now, go and add a mapping in #{__FILE__}"
       
       else
-        # Allow straight CSS as the locator
+        # Probably straight CSS was given, let's just let it through then
         locator
     end
   end

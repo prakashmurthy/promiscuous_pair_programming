@@ -1,11 +1,11 @@
-When /^I confirm any js alerts$/ do
+When /^I will let through any Javascript alert$/ do
   page.evaluate_script("window.alert = function(msg) { return true; }")
 end
 
-When /^I answer OK to any js confirmations$/ do
+When /^I will accept any Javascript confirmation$/ do
   page.evaluate_script("window.confirm = function(msg) { return true; }")
 end
 
-When /^I answer Cancel to any js confirmations$/ do
+When /^I will reject any Javascript confirmation$/ do
   page.evaluate_script("window.confirm = function(msg) { return false; }")
 end
