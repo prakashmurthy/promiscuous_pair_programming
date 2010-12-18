@@ -53,7 +53,6 @@ describe User do
     user.should_not be_valid
   end
 end
-
 # == Schema Information
 #
 # Table name: users
@@ -68,4 +67,8 @@ end
 #  first_name           :string(255)
 #  last_name            :string(255)
 #  location_id          :integer
+#  confirmation_token   :string(255)
+#  confirmed_at         :datetime
+#  confirmation_sent_at :datetime
 #
+

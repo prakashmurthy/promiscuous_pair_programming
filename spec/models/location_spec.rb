@@ -156,7 +156,6 @@ describe Location do
     end
   end
 end
-
 # == Schema Information
 #
 # Table name: locations
@@ -180,3 +179,4 @@ end
 #  created_at       :datetime
 #  updated_at       :datetime
 #
+
