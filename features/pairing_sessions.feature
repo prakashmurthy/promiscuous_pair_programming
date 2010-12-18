@@ -1,97 +1,126 @@
 Feature: Managing pairing sessions
-  In order to connect with other developers to pair on some code
   As a logged in user
-  I want to be able to manage my pairing sessions.
+  I want to be able to manage my pairing sessions
+  In order to connect with other developers to pair on some code.
 
   Background:
-    Given the time is 2009-11-01 10:00 AM
+    Given I am logged in
 
-  Scenario: Viewing my pairing sessions only shows me the pairing sessions that I have created
-    Given a user "another user" exists
-    And a pairing session exists with owner: user: "another user", description: "Help fix a bug"
-    And a logged in user exists
-    And a pairing session exists with owner: the user, description: "Patch Active Record"
-    When I go to the root page
+  Scenario: The list of my pairing sessions shows only current sessions I've created, sorted oldest to newest
+    Given a user "some user" exists
+    Given a user "pair" exists
+    And the following pairing sessions exist:
+      | owner            | pair        | description                | location_detail | start_at           | end_at             |
+      | user "some user" |             | Created by some user       | Aspen, CO       | 2010-01-01 12:00AM | 2010-01-01 01:00AM |
+      | user "me"        |             | Created by me with no pair | Aspen, CO       | 2010-01-02 12:00AM | 2010-01-02 01:00AM |
+      | user "me"        | user "pair" | Created by me with pair    | Aspen, CO       | 2010-01-01 12:00AM | 2010-01-01 01:00AM |
+    When I go to the home page
     And I follow "My Sessions" within the navigation
-    Then I should see "Patch Active Record" within my pairing sessions
-    And I should not see "Help fix a bug" within my pairing sessions
+    Then the table of my pairing sessions should contain:
+      | Start time         | End time           | Description                | Location  | Pair | Actions                |
+      | 2010-01-01 12:00AM | 2010-01-01 01:00AM | Created by me with pair    | Aspen, CO | Yes  | Show \| Edit \| Delete |
+      | 2010-01-02 12:00AM | 2010-01-02 01:00AM | Created by me with no pair | Aspen, CO | No   | Show \| Edit \| Delete |
 
-  Scenario: Viewing my pairing sessions only shows me the pairing sessions in the future
-    Given a user "pair" exists with email: "pair@test.com", first_name: "Hello", last_name: "World"
-    And a logged in user exists
+  Scenario: The list of my pairing sessions excludes past ones
+    Given a user "pair" exists
+    And today is "2010-01-01 12:00 AM"
     And the following pairing sessions exist
-      | owner    | description                      | start_at            | end_at             | pair        |
-      | the user | Future pairing session with pair | 2010-11-15 10:00 AM | 2010-11-15 11:00AM | user "pair" |
-      | the user | Topic for past pairing session   | 2010-11-12 10:00 AM | 2010-11-12 11:00AM |             |
-    And the time is "2010-11-13 10:00 AM"
-    When I go to the root page
+      | owner     | pair        | description                         | location_detail | start_at           | end_at             |
+      | user "me" |             | Future pairing session with no pair | Aspen, CO       | 2010-01-03 12:00AM | 2010-01-03 01:00AM |
+      | user "me" | user "pair" | Present pairing session with pair   | Aspen, CO       | 2010-01-02 12:00AM | 2010-01-02 01:00AM |
+      | user "me" |             | Past pairing session                | Aspen, CO       | 2010-01-01 12:00AM | 2010-01-01 01:00AM |
+    And today is "2010-01-02 12:00 AM"
+    When I go to the home page
     And I follow "My Sessions" within the navigation
-    Then I should see "Future pairing session with pair" within my pairing sessions
-    And I should see "Yes" within my pairing sessions
-    And I should not see "Topic for past pairing session" within my pairing sessions
+    Then the table of my pairing sessions should contain:
+      | Start time         | End time           | Description                         | Location  | Pair | Actions                |
+      | 2010-01-02 12:00AM | 2010-01-02 01:00AM | Present pairing session with pair   | Aspen, CO | Yes  | Show \| Edit \| Delete |
+      | 2010-01-03 12:00AM | 2010-01-03 01:00AM | Future pairing session with no pair | Aspen, CO | No   | Show \| Edit \| Delete |
+    
+  Scenario: The list of my pairing sessions reveals past sessions, sorted oldest to newest
+    Given a user "pair" exists
+    And today is "2010-01-01 12:00 AM"
+    And the following pairing sessions exist
+      | owner     | pair        | description                         | location_detail | start_at           | end_at             |
+      | user "me" |             | Future pairing session with no pair | Aspen, CO       | 2010-01-03 12:00AM | 2010-01-03 01:00AM |
+      | user "me" | user "pair" | Present pairing session with pair   | Aspen, CO       | 2010-01-02 12:00AM | 2010-01-02 01:00AM |
+      | user "me" |             | Past pairing session                | Aspen, CO       | 2010-01-01 12:00AM | 2010-01-01 01:00AM |
+    And today is "2010-01-02 12:00 AM"
+    When I go to the home page
+    And I follow "My Sessions" within the navigation
+    And I follow "Show past pairing sessions"
+    Then the table of my pairing sessions should contain:
+      | Start time         | End time           | Description                         | Location  | Pair | Actions                |
+      | 2010-01-01 12:00AM | 2010-01-01 01:00AM | Past pairing session                | Aspen, CO | No   | Show \| Edit \| Delete |
+      | 2010-01-02 12:00AM | 2010-01-02 01:00AM | Present pairing session with pair   | Aspen, CO | Yes  | Show \| Edit \| Delete |
+      | 2010-01-03 12:00AM | 2010-01-03 01:00AM | Future pairing session with no pair | Aspen, CO | No   | Show \| Edit \| Delete |
+    
+  Scenario: The list of available pairing sessions shows only unpaired, current sessions created by other people, sorted oldest to newest
+    Given a user "some user" exists
+    Given a user "another user" exists
+    And today is "2010-01-01 12:00 AM"
+    And the following pairing sessions exist:
+      | owner               | pair                | description                          | location_detail | start_at           | end_at             |
+      | user "some user"    |                     | Created by some user with no pair    | Aspen, CO       | 2010-01-03 12:00AM | 2010-01-03 01:00AM |
+      | user "another user" |                     | Created by another user with no pair | Aspen, CO       | 2010-01-02 12:00AM | 2010-01-02 01:00AM |
+      | user "some user"    |                     | Created by some user with no pair    | Aspen, CO       | 2010-01-01 12:00AM | 2010-01-01 01:00AM |
+      | user "some user"    | user "another user" | Created by some user with pair       | Aspen, CO       | 2010-01-02 12:00AM | 2010-01-02 01:00AM |
+      | user "me"           |                     | Created by me                        | Aspen, CO       | 2010-01-02 12:00AM | 2010-01-02 01:00AM |
+    And today is "2010-01-02 12:00 AM"
+    When I go to the home page
+    And I follow "My Sessions" within the navigation
+    Then the table of available pairing sessions should contain:
+      | Start time         | End time           | Description                          | Location  | Actions |
+      | 2010-01-02 12:00AM | 2010-01-02 01:00AM | Created by another user with no pair | Aspen, CO |         |
+      | 2010-01-03 12:00AM | 2010-01-03 01:00AM | Created by some user with no pair    | Aspen, CO |         |
 
   Scenario: Creating a new pairing session adds the new session to my pairing sessions
-    Given I am logged in
-    And the location of the new pairing session will be geolocated as "Boulder, CO"
+    Given the location of the new pairing session will be geolocated as "Aspen, CO"
     When I follow "New Pairing session"
     And I fill in "Start Date/Time" with "2010-11-12 10:00 AM"
     And I fill in "End Date/Time" with "2010-11-12 1:00 PM"
     And I fill in "Description" with "Work on RSpec bugs"
-    And I fill in "Location" with "Boulder, CO"
+    And I fill in "Location" with "Aspen, CO"
     And I press "Create Pairing session"
     Then I should see "Pairing session was successfully created."
-    And the "#my_pairing_sessions" table should contain:
-      | Start time         | End time           | Description        | Location    | Pair | Actions                |
-      | 2010-11-12 10:00AM | 2010-11-12 01:00PM | Work on RSpec bugs | Boulder, CO | No   | Show \| Edit \| Delete |
+    And the table of my pairing sessions should contain:
+      | Start time         | End time           | Description        | Location  | Pair | Actions                |
+      | 2010-11-12 10:00AM | 2010-11-12 01:00PM | Work on RSpec bugs | Aspen, CO | No   | Show \| Edit \| Delete |
 
   Scenario: Editing an existing pairing session
-    Given I am logged in
-    And a pairing session exists with owner: the user
-    And the location of the pairing session will be geolocated as "Boulder, CO"
+    And a pairing session exists with owner: user "me"
+    And the location of the pairing session will be geolocated as "Aspen, CO"
     When I go to the pairing sessions page
     And I follow "Edit"
     And I fill in "Start Date/Time" with "2010-11-13 10:00 AM"
     And I fill in "End Date/Time" with "2010-11-13 1:00 PM"
     And I fill in "Description" with "Work on RSpec bugs"
-    And I fill in "Location" with "Boulder, CO"
+    And I fill in "Location" with "Aspen, CO"
     And I press "Update Pairing session"
     Then I should see "Pairing session was successfully updated."
-    And the "#my_pairing_sessions" table should contain:
-      | Start time         | End time           | Description        | Location    | Pair | Actions                |
-      | 2010-11-13 10:00AM | 2010-11-13 01:00PM | Work on RSpec bugs | Boulder, CO | No   | Show \| Edit \| Delete |
-
-  Scenario: Viewing all my pairing sessions shows me my pairing sessions including those in the past, and they are sorted oldest to newest
-    Given a logged in user exists
-    And a pairing session exists with owner: the user, description: "Topic for future pairing session", start_at: "11/11/2051 10:00 AM", end_at: "11/11/2051 11:00 AM"
-    And a pairing session exists with owner: the user, description: "Topic for past pairing session", start_at: "11/11/2009 10:00 AM", end_at: "11/11/2009 11:00 AM"
-    And the time is "11/12/2010 10:00 AM"
-    When I go to the root page
-    And I follow "My Sessions" within the navigation
-    And I follow "Show all sessions, including past ones"
-    Then I should see "Topic for future pairing session" within my pairing sessions
-    And I should see "Topic for past pairing session" within my pairing sessions
+    And the table of my pairing sessions should contain:
+      | Start time         | End time           | Description        | Location  | Pair | Actions                |
+      | 2010-11-13 10:00AM | 2010-11-13 01:00PM | Work on RSpec bugs | Aspen, CO | No   | Show \| Edit \| Delete |
 
   @javascript
-  Scenario: Delete a pairing session asks you to confirm the deletion
-    Given a logged in user exists
-    And a pairing session exists with owner: the user, description: "Help fix a bug"
+  Scenario: Deleting a pairing session asks you to confirm the deletion
+    And a pairing session exists with owner: user "me", description: "Help fix a bug"
     When I go to the pairing sessions page
-    Then I should see "Help fix a bug"
+    Then I should see "Help fix a bug" within my pairing sessions
 
-    When I answer Cancel to any js confirmations
-    And I follow "Delete" within my pairing sessions
+    Given I will reject any Javascript confirmation
+    When I follow "Delete" within my pairing sessions
     Then I should not see "Pairing session was successfully deleted."
-    And I should see "Help fix a bug"
+    When I reload the page
+    Then I should still see "Help fix a bug" within my pairing sessions
 
-    When I answer OK to any js confirmations
-    And I follow "Delete" within my pairing sessions
+    Given I will accept any Javascript confirmation
+    When I follow "Delete" within my pairing sessions
     Then I should see "Pairing session was successfully deleted."
-    And I should not see "Help fix a bug"
-
-  Scenario: When I delete a pairing session that I own, without a pair, the session is removed
-  from the system and no email is sent out
-    Given a logged in user exists
-    And a pairing session exists with owner: the user, description: "Help fix a bug"
+    And I should no longer see "Help fix a bug" within my pairing sessions
+    
+  Scenario: When I delete a pairing session that I own, without a pair, the session is removed from the system and no email is sent out
+    And a pairing session exists with owner: user "me", description: "Help fix a bug"
     When I go to the pairing sessions page
     Then I should see "Help fix a bug" within my pairing sessions
 
@@ -100,13 +129,11 @@ Feature: Managing pairing sessions
     And a pairing session should not exist with description: "Help fix a bug"
     And 0 emails should be delivered
 
-  Scenario: When I delete a pairing session that I own, with a pair, the session
-  is removed from the system and the pair is alerted via email
+  Scenario: When I delete a pairing session that I own, with a pair, the session is removed from the system and the pair is alerted via email
     Given a user "pair" exists
-    And a logged in user exists
     And the following pairing sessions exist
-      | owner    | description                 | start_at            | end_at             | pair        |
-      | the user | Pairing session with a pair | 2010-11-15 10:00 AM | 2010-11-15 11:00AM | user "pair" |
+      | owner     | description                 | start_at            | end_at             | pair        |
+      | user "me" | Pairing session with a pair | 2010-11-15 10:00 AM | 2010-11-15 11:00AM | user "pair" |
     When I go to the pairing sessions page
     Then I should see "Pairing session with a pair" within my pairing sessions
     When I follow "Delete" within my pairing sessions
@@ -116,47 +143,30 @@ Feature: Managing pairing sessions
     And the email should have subject: "The pairing session Pairing session with a pair has been canceled"
     And the email should have from: "info@promiscuouspairprogramming.com"
 
-
-  Scenario: Viewing a list of pairing sessions I can pair on should exclude past sessions
-    Given a user "session owner" exists
-    And a user "pair" exists
-    And a logged in user exists
-    And a pairing session exists with owner: user "session owner", description: "Open but past session", start_at: "2010-01-02 10:00 AM", end_at: "2010-01-02 11:00 AM"
-    And the time is "2010-01-03 00:00:00"
-    And a pairing session exists with owner: user "session owner", description: "Open session", start_at: "2010-01-04 10:00 AM", end_at: "2010-01-04 11:00 AM"
-    And a pairing session exists with owner: user "session owner", pair: user "pair", description: "This session taken", start_at: "2010-01-05 10:00 AM", end_at: "2010-01-05 11:00 AM"
-    And a pairing session exists with owner: the user, description: "This is my session", start_at: "2010-01-06 10:00 AM", end_at: "2010-01-06 11:00 AM"
-    When I go to the pairing sessions page
-    Then I should see "Open session" within available pairing sessions
-    And I should not see "Open but past session" within available pairing sessions
-    And I should not see "This session taken" within available pairing sessions
-    And I should not see "This is my session" within available pairing sessions
-
-  Scenario: I can sign up to be the pair for a pairing session I am not the owner of
+  Scenario: Joining a pairing session
     Given a user "session owner" exists with email: "session_owner@test.com"
-    And a pairing session exists with owner: user: "session owner", description: "Open session", start_at: "2010-11-12 10:00 AM", end_at: "2010-11-12 11:00 AM"
-    And a logged in user exists
+    And a pairing session exists with owner: user "session owner", description: "Open session"
     When I go to the pairing sessions page
     Then I should see "Open session" within available pairing sessions
     And I should not see "Open session" within sessions I am pairing on
     When I press "I'll pair on this!" within available pairing sessions
-    Then I should not see "Open session" within available pairing sessions
-    And I should see "You are the lucky winner."
-    And I should see "Open session" within sessions I am pairing on
-    And I should see "session_owner@test.com" within sessions I am pairing on
+    Then I should see "You are the lucky winner."
+    And I should not see "Open session" within available pairing sessions
+    And the table of sessions I am pairing on should contain:
+      | Session Owner          | Description  |
+      | session_owner@test.com | Open session |
     And 1 email should be delivered to user "session owner"
-    And the email should have subject: "You have someone to pair with on Open session"
-    And the email should have from: "info@promiscuouspairprogramming.com"
+    And the email should be from: "info@promiscuouspairprogramming.com", subject: "You have someone to pair with on Open session"
 
-  Scenario: I can cancel a pairing session I am not the owner of that I signed up for
+  Scenario: Backing out of a pairing session
     Given a user "session owner" exists
-    And a logged in user exists
-    And a pairing session exists with owner: user: "session owner", pair: the user, description: "Open session", start_at: "2010-11-12 10:00 AM", end_at: "2010-11-12 11:00 AM"
-    And I go to the pairing sessions page
-    And I press "Sorry, gotta cancel."
-    Then I should not see "Open session" within sessions I am pairing on
-    And I should see "Sorry to see you go."
+    And a pairing session exists with owner: user: "session owner", pair: user "me", description: "Open session"
+    When I go to the pairing sessions page
+    Then I should see "Open session" within sessions I am pairing on
+    And I should not see "Open session" within available pairing sessions 
+    When I press "Sorry, gotta cancel."
+    Then I should see "Sorry to see you go."
+    And I should not see "Open session" within sessions I am pairing on
     And I should see "Open session" within available pairing sessions
     And 1 email should be delivered to user "session owner"
-    And the email should have subject: "Your pair for Open session has canceled"
-    And the email should have from: "info@promiscuouspairprogramming.com"
+    And the email should be from: "info@promiscuouspairprogramming.com", subject: "Your pair for Open session has canceled"

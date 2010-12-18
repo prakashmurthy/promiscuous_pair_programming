@@ -1,9 +1,8 @@
-<p>
-  <%= link_to "Show all sessions, including past ones", pairing_sessions_path(:show_all => "1") %> |
-  <%= link_to 'New Pairing session', new_pairing_session_path %>
-</p>
+<p><%= link_to 'New Pairing session', new_pairing_session_path %></p>
 
 <h2>Pairing Sessions I have created</h2>
+
+<p><%= link_to "Show past pairing sessions", pairing_sessions_path(:show_all => "1") %></p>
 
 <table id="my_pairing_sessions">
   <tr>

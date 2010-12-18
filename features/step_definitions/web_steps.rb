@@ -88,14 +88,14 @@ When /^(?:|I )attach the file "([^"]*)" to "([^"]*)"$/ do |path, field|
   attach_file(field, path)
 end
 
-Then /^(?:|I )should see JSON:$/ do |expected_json|
+Then /^(?:|I )should (?:still )?see JSON:$/ do |expected_json|
   require 'json'
   expected = JSON.pretty_generate(JSON.parse(expected_json))
   actual   = JSON.pretty_generate(JSON.parse(response.body))
   expected.should == actual
 end
 
-Then /^(?:|I )should see "([^"]*)"$/ do |text|
+Then /^(?:|I )should (?:still )?see "([^"]*)"$/ do |text|
   if page.respond_to? :should
     page.should have_content(text)
   else
@@ -103,7 +103,7 @@ Then /^(?:|I )should see "([^"]*)"$/ do |text|
   end
 end
 
-Then /^(?:|I )should see \/([^\/]*)\/$/ do |regexp|
+Then /^(?:|I )should (?:still )?see \/([^\/]*)\/$/ do |regexp|
   regexp = Regexp.new(regexp)
 
   if page.respond_to? :should
@@ -113,7 +113,7 @@ Then /^(?:|I )should see \/([^\/]*)\/$/ do |regexp|
   end
 end
 
-Then /^(?:|I )should not see "([^"]*)"$/ do |text|
+Then /^(?:|I )should (?:not|no longer) see "([^"]*)"$/ do |text|
   if page.respond_to? :should
     page.should have_no_content(text)
   else
@@ -121,7 +121,7 @@ Then /^(?:|I )should not see "([^"]*)"$/ do |text|
   end
 end
 
-Then /^(?:|I )should not see \/([^\/]*)\/$/ do |regexp|
+Then /^(?:|I )should (?:not|no longer) see \/([^\/]*)\/$/ do |regexp|
   regexp = Regexp.new(regexp)
 
   if page.respond_to? :should
@@ -131,7 +131,7 @@ Then /^(?:|I )should not see \/([^\/]*)\/$/ do |regexp|
   end
 end
 
-Then /^the "([^"]*)" field(?: within "?([^:"]*)"?)? should contain "([^"]*)"$/ do |field, parent, value|
+Then /^the "([^"]*)" field(?: within "?([^:"]*)"?)? should (?:still )?contain "([^"]*)"$/ do |field, parent, value|
   with_scope(parent) do
     field = find_field(field)
     field_value = (field.tag_name == 'textarea') ? field.text : field.value
@@ -143,7 +143,7 @@ Then /^the "([^"]*)" field(?: within "?([^:"]*)"?)? should contain "([^"]*)"$/ d
   end
 end
 
-Then /^the "([^"]*)" field(?: within "?([^:"]*)"?)? should not contain "([^"]*)"$/ do |field, parent, value|
+Then /^the "([^"]*)" field(?: within "?([^:"]*)"?)? should (?:not|no longer) contain "([^"]*)"$/ do |field, parent, value|
   with_scope(parent) do
     field = find_field(field)
     field_value = (field.tag_name == 'textarea') ? field.text : field.value
@@ -155,7 +155,7 @@ Then /^the "([^"]*)" field(?: within "?([^:"]*)"?)? should not contain "([^"]*)"
   end
 end
 
-Then /^the "([^"]*)" checkbox(?: within "?([^:"]*)"?)? should be checked$/ do |label, parent|
+Then /^the "([^"]*)" checkbox(?: within "?([^:"]*)"?)? should (?:still )?be checked$/ do |label, parent|
   with_scope(parent) do
     field_checked = find_field(label)['checked']
     if field_checked.respond_to? :should
@@ -166,7 +166,7 @@ Then /^the "([^"]*)" checkbox(?: within "?([^:"]*)"?)? should be checked$/ do |l
   end
 end
 
-Then /^the "([^"]*)" checkbox(?: within "?([^:"]*)"?)? should not be checked$/ do |label, parent|
+Then /^the "([^"]*)" checkbox(?: within "?([^:"]*)"?)? should (?:not|no longer) be checked$/ do |label, parent|
   with_scope(parent) do
     field_checked = find_field(label)['checked']
     if field_checked.respond_to? :should
@@ -177,7 +177,9 @@ Then /^the "([^"]*)" checkbox(?: within "?([^:"]*)"?)? should not be checked$/ d
   end
 end
 
-Then /^the "([^"]*)" table should contain:$/ do |sel, expected_table|
+Then /^the (?:"?([^"]*)"? table|table of ([^"]*)) should (?:still )?contain:$/ do |one, two, expected_table|
+  locator = two || one
+  sel = selector_for(locator)
   actual_table = tableish("#{sel} tr", "th, td")
   # Get rid of new lines in each cell as that isn't important for comparison purposes
   actual_table.each do |row|
@@ -185,8 +187,10 @@ Then /^the "([^"]*)" table should contain:$/ do |sel, expected_table|
       cell.gsub!(/[ ]*\n+[ ]*/, " ")
     end
   end
-  # Raise error on a surplus column (not sure why false is the default..)
-  expected_table.diff!(actual_table, :surplus_col => true)
+  # By default this will not raise an error when extra columns are in the actual table
+  # that aren't in the expected table. This is because half the time we only care
+  # about certain columns in the table, like the "name" column or whatever.
+  expected_table.diff!(actual_table)
 end
 
 Then /^(?:|I )should (?:still )?be on (.+)$/ do |page_name|
@@ -198,7 +202,7 @@ Then /^(?:|I )should (?:still )?be on (.+)$/ do |page_name|
   end
 end
 
-Then /^(?:|I )should have the following query string:$/ do |expected_pairs|
+Then /^(?:|I )should (?:still )?have the following query string:$/ do |expected_pairs|
   query = URI.parse(current_url).query
   actual_params = query ? CGI.parse(query) : {}
   expected_params = {}
