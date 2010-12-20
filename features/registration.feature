@@ -1,10 +1,13 @@
-Feature: Registering new user for the site
-  In order to be able to access the site
+Feature: Registration
   As an unregistered user
   I want to create a user account
+  In order to use the actual features of the site
+
+  Background:
+    Given my location will be geolocated as "Aspen, CO"
 
   Scenario: Creating a user account
-    When I go to the root page
+    When I go to the home page
     And I follow "Create an account" within the account management section
     And I fill in "First name" with "Bob"
     And I fill in "Last name" with "Test"
@@ -16,8 +19,8 @@ Feature: Registering new user for the site
     And I should see "New account created."
 
   Scenario: Editing my account
-    Given I am logged in
-    And I follow "Edit my account" within the navigation section
+    Given I am signed in
+    When I follow "Edit my account" within the navigation section
     And I fill in "First name" with "New"
     And I fill in "Last name" with "Name"
     And I press "Update"
@@ -25,8 +28,8 @@ Feature: Registering new user for the site
     Then I should see "Hello New Name" within the welcome section
     
   Scenario: Changing my password
-    Given I am logged in
-    And I follow "Edit my account" within the navigation section
+    Given I am signed in
+    When I follow "Edit my account" within the navigation section
     And I fill in "New password" with "secret"
     And I fill in "Confirm new password" with "secret"
     And I press "Update"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101218213711) do
+ActiveRecord::Schema.define(:version => 20101218211829) do
 
   create_table "locations", :force => true do |t|
     t.string   "raw_location",     :null => false

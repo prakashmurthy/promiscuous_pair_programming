@@ -8,7 +8,7 @@ Feature: Location
   And I can have a more pleasant experience.
   
   Background:
-    Given I am logged in
+    Given I am signed in
     And a user "some user" exists
     And the following locations exist:
       | location   | raw_location   | lat       | lng         | street_address   | city       | province | district | state | zip   | country | country_code | accuracy | precision | suggested_bounds                                | provider |
