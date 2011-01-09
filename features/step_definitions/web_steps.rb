@@ -188,6 +188,8 @@ end
 Then /^the (?:"?([^"]*)"? table|table of ([^"]*)) should (?:still )?contain:$/ do |one, two, expected_table|
   locator = two || one
   sel = selector_for(locator)
+  # tableish will not check for the existence of the element so as a sanity check we just do that
+  page.should have_selector(sel)
   actual_table = tableish("#{sel} tr", "th, td")
   # Get rid of new lines in each cell as that isn't important for comparison purposes
   actual_table.each do |row|
