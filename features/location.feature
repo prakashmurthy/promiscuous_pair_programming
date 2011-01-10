@@ -25,7 +25,7 @@ Feature: Location
   Scenario: Location is automatically detected based on IP address
     When I visit the pairing sessions page
     Then the "location" field within the pairing sessions form should contain "Boulder, CO"
-    And the "#available_pairing_sessions" table should contain:
+    And the table of my available pairing sessions should contain:
       | Start time         | End time           | Description                       | Location       |
       | 2010-01-03 12:00AM | 2010-01-04 12:00AM | Pairing session in Louisville, CO | Louisville, CO |
       | 2010-01-01 12:00AM | 2010-01-02 12:00AM | Pairing session in Boulder, CO    | Boulder, CO    |
@@ -35,7 +35,7 @@ Feature: Location
     When I fill in "location" with "Denver, CO" within the pairing sessions form
     And I press "Update list"
     #Then I should still be on the pairing sessions page
-    And the "#available_pairing_sessions" table should contain:
+    And the table of my available pairing sessions should contain:
       | Start time         | End time           | Description                       | Location       |
       | 2010-01-05 12:00AM | 2010-01-06 12:00AM | Pairing session in Denver, CO     | Denver, CO     |
     When I reload the page
@@ -46,7 +46,7 @@ Feature: Location
     When I select "30" from "radius" within the pairing sessions form
     And I press "Update list"
     #Then I should still be on the pairing sessions page
-    And the "#available_pairing_sessions" table should contain:
+    And the table of my available pairing sessions should contain:
       | Start time         | End time           | Description                       | Location       |
       | 2010-01-05 12:00AM | 2010-01-06 12:00AM | Pairing session in Denver, CO     | Denver, CO     |
       | 2010-01-03 12:00AM | 2010-01-04 12:00AM | Pairing session in Louisville, CO | Louisville, CO |
