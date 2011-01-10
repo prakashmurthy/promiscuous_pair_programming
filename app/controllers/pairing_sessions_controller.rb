@@ -8,14 +8,14 @@ class PairingSessionsController < SecureApplicationController
     self.current_radius   = params[:radius]   if params[:radius]
     
     @my_involved_pairing_sessions = begin
-      scope = PairingSession.involving(current_user).order("start_at desc")
+      scope = PairingSession.involving(current_user).order(:start_at.desc)
       params[:show_all] ? scope : scope.upcoming
     end
-    @my_open_pairing_sessions = current_user.owned_pairing_sessions.without_pair.order("start_at desc")
+    @my_open_pairing_sessions = current_user.owned_pairing_sessions.without_pair.order(:start_at.desc)
     @available_pairing_sessions =
       PairingSession.available_to(current_user).
       location_scoped(:distance => current_radius, :around => current_location).
-      order("start_at desc")
+      order(:start_at.desc)
   end
 
   def show

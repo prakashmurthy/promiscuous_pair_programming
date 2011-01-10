@@ -5,6 +5,7 @@ gem 'pg', '0.9.0'
 gem 'devise', '1.1.3'
 gem "escape_utils", '0.1.9'
 gem "geokit-rails3", "0.1.2"
+gem "meta_where", "0.9.9.2"
 
 group :test, :development do
   if RUBY_VERSION < "1.9"

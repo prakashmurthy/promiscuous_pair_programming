@@ -21,15 +21,15 @@ class PairingSession < ActiveRecord::Base
   include PPP::ModelMixins::Geocoding
   auto_geocode_location
 
-  scope :upcoming, lambda { where("start_at >= ?", Time.now.utc) }
-  scope :not_owned_by, lambda {|user| where("owner_id != ?", user.id) }
+  scope :upcoming, lambda { where(:start_at.gte => Time.now.utc) }
+  scope :not_owned_by, lambda {|user| where(:owner_id.ne => user.id) }
   scope :without_pair, where(:pair_id => nil)
   scope :location_scoped, lambda {|options|
     geo_scope(:within => options[:distance], :origin => options[:around].coordinates).
     includes(:location)
   }
   scope :involving, lambda {|user|
-    where("(owner_id = :user_id AND pair_id IS NOT NULL) OR (pair_id = :user_id)", :user_id => user.id)
+    where({:owner_id.eq => user.id, :pair_id.ne => nil} | {:pair_id.eq => user.id})
   }
   
   # Compound scopes
