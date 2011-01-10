@@ -72,7 +72,9 @@ private
   def precision_cannot_be_unknown
     self.errors.add(:precision, "cannot be unknown") if precision == "unknown"
   end
-end# == Schema Information
+end
+
+# == Schema Information
 #
 # Table name: locations
 #
@@ -95,4 +97,3 @@ end# == Schema Information
 #  created_at       :datetime
 #  updated_at       :datetime
 #
-

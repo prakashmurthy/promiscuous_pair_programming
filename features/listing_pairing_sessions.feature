@@ -6,9 +6,7 @@ Feature: Listing pairing sessions
   Background:
     Given I am signed in
     Given a user "Joe" exists with first_name: "Joe", last_name: "Bloe"
-    And the following locations exist:
-      | location   | raw_location   | lat       | lng         | street_address   | city       | province | district | state | zip   | country | country_code | accuracy | precision | suggested_bounds                                | provider |
-      | Boulder    | Boulder, CO    | 40.005429 | -105.251126 | 3205 Euclid Ave  | Boulder    | Boulder  |          | CO    | 80303 | USA     | US           | 8        | address   | 40.0022414,-105.2542036,40.0085366,-105.2479084 | google   |
+    And Boulder exists as a location
     And the time is "2009-12-26 00:00:00"
     And the following pairing sessions exist:
       | owner      | pair      | description                                   | start_at           | end_at             | location           |

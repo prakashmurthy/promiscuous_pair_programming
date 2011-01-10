@@ -10,11 +10,9 @@ Feature: Location
   Background:
     Given I am signed in
     And a user "some user" exists
-    And the following locations exist:
-      | location   | raw_location   | lat       | lng         | street_address   | city       | province | district | state | zip   | country | country_code | accuracy | precision | suggested_bounds                                | provider |
-      | Boulder    | Boulder, CO    | 40.005429 | -105.251126 | 3205 Euclid Ave  | Boulder    | Boulder  |          | CO    | 80303 | USA     | US           | 8        | address   | 40.0022414,-105.2542036,40.0085366,-105.2479084 | google   |
-      | Louisville | Louisville, CO | 39.979751 | -105.1371   | 451 499 South St | Louisville | Boulder  |          | CO    | 80027 | USA     | US           | 8        | address   | 39.9765245,-105.1403193,39.9828197,-105.1340241 | google   |
-      | Denver     | Denver, CO     | 39.743098 | -104.964752 | 1658 High St     | Denver     | Denver   |          | CO    | 80206 | USA     | US           | 8        | address   | 39.7396714,-104.9675556,39.7459666,-104.9612604 | google   |
+    And Boulder exists as a location
+    And Louisville exists as a location
+    And Denver exists as a location
     And the time is "2010-01-01 12:00AM"
     And the following pairing sessions exist:
       | owner            | description                       | start_at   | end_at     | location              |

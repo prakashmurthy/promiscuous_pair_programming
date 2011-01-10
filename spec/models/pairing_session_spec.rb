@@ -202,78 +202,14 @@ describe PairingSession do
    
   describe '.location_scoped' do
     it "includes sessions which are located within the given distance around the coordinates in the given location" do
-      boulder = Location.create! do |loc|
-        loc.raw_location = "Boulder, CO"
-        loc.lat = 40.005429
-        loc.lng = -105.251126
-        loc.street_address = "3205 Euclid Ave"
-        loc.city = "Boulder"
-        loc.province = "Boulder"
-        loc.district = nil
-        loc.state = "CO"
-        loc.zip = 80303
-        loc.country = "USA"
-        loc.country_code = "US"
-        loc.accuracy = 8
-        loc.precision = "address"
-        loc.suggested_bounds = "40.0022414,-105.2542036,40.0085366,-105.2479084"
-        loc.provider = "google"
-      end
-      louisville = Location.create! do |loc|
-        loc.raw_location = "Louisville, CO"
-        loc.lat = 39.979751
-        loc.lng = -105.1371
-        loc.street_address = "451 499 South St"
-        loc.city = "Louisville"
-        loc.province = "Boulder"
-        loc.district = nil
-        loc.state = "CO"
-        loc.zip = 80027
-        loc.country = "USA"
-        loc.country_code = "US"
-        loc.accuracy = 8
-        loc.precision = "address"
-        loc.suggested_bounds = "39.9765245,-105.1403193,39.9828197,-105.1340241"
-        loc.provider = "google"
-      end
+      boulder = Factory.create(:location_boulder)
+      louisville = Factory.create(:location_louisville)
       session = Factory.create(:pairing_session, :location => louisville)
       PairingSession.location_scoped(:distance => 10, :around => boulder).should include(session)
     end
     it "excludes sessions which are located outside of the given distance around the coordinates in the given location" do
-      boulder = Location.create! do |loc|
-        loc.raw_location = "Boulder, CO"
-        loc.lat = 40.005429
-        loc.lng = -105.251126
-        loc.street_address = "3205 Euclid Ave"
-        loc.city = "Boulder"
-        loc.province = "Boulder"
-        loc.district = nil
-        loc.state = "CO"
-        loc.zip = 80303
-        loc.country = "USA"
-        loc.country_code = "US"
-        loc.accuracy = 8
-        loc.precision = "address"
-        loc.suggested_bounds = "40.0022414,-105.2542036,40.0085366,-105.2479084"
-        loc.provider = "google"
-      end
-      broomfield = Location.create! do |loc|
-        loc.raw_location = "Broomfield, CO"
-        loc.lat = 39.9231
-        loc.lng = -105.087533
-        loc.street_address = "6 Garden Center"
-        loc.city = "Broomfield"
-        loc.province = "Broomfield"
-        loc.district = nil
-        loc.state = "CO"
-        loc.zip = 80020
-        loc.country = "USA"
-        loc.country_code = "US"
-        loc.accuracy = 8
-        loc.precision = "address"
-        loc.suggested_bounds = "39.9202014,-105.0908036,39.9264966,-105.0845084"
-        loc.provider = "google"
-      end
+      boulder = Factory.create(:location_boulder)
+      broomfield = Factory.create(:location_broomfield)
       session = Factory.create(:pairing_session, :location => broomfield)
       PairingSession.location_scoped(:distance => 10, :around => boulder).should_not include(session)
     end
