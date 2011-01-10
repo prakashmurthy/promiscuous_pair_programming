@@ -50,8 +50,8 @@ Feature: Location
     #Then I should still be on the pairing sessions page
     And the "#available_pairing_sessions" table should contain:
       | Start time         | End time           | Description                       | Location       |
-      | 2010-01-01 12:00AM | 2010-01-02 12:00AM | Pairing session in Boulder, CO    | Boulder, CO    |
-      | 2010-01-03 12:00AM | 2010-01-04 12:00AM | Pairing session in Louisville, CO | Louisville, CO |
       | 2010-01-05 12:00AM | 2010-01-06 12:00AM | Pairing session in Denver, CO     | Denver, CO     |
+      | 2010-01-03 12:00AM | 2010-01-04 12:00AM | Pairing session in Louisville, CO | Louisville, CO |
+      | 2010-01-01 12:00AM | 2010-01-02 12:00AM | Pairing session in Boulder, CO    | Boulder, CO    |
     When I reload the page
     Then the "radius" field within the pairing sessions form should contain "30"
