@@ -1,61 +1,71 @@
 <p><%= link_to 'New Pairing session', new_pairing_session_path %></p>
-
-<h2>Pairing Sessions I have created</h2>
-
-<p><%= link_to "Show past pairing sessions", pairing_sessions_path(:show_all => "1") %></p>
-
-<table id="my_pairing_sessions">
+ 
+<h2>My commitments</h2>
+ 
+<p><%= link_to "Show old pairing sessions", pairing_sessions_path(:show_all => "1") %></p>
+ 
+<table id="my_involved_pairing_sessions">
   <tr>
     <th>Start time</th>
     <th>End time</th>
     <th>Description</th>
-    <th>Pair</th>
+    <th>Partner</th>
     <th>Location</th>
-    <th>Actions</th>
+    <th></th>
   </tr>
-  <% @my_pairing_sessions.each do |pairing_session| %>
+  <% @my_involved_pairing_sessions.each do |session| %>
     <tr>
-      <td><%= pairing_session.start_at %></td>
-      <td><%= pairing_session.end_at %></td>
-      <td><%= pairing_session.description %></td>
-      <td><%= pairing_session.pair ? "Yes" : "No" %></td>
-      <td><%= pairing_session.location_detail.presence || pairing_session.location.try(:raw_location) %></td>
+      <td><%= session.start_at %></td>
+      <td><%= session.end_at %></td>
+      <td><%= session.description %></td>
+      <td><%= lambda {|x| x && x.full_name }.call(session.partner_of(current_user)) %></td>
+      <td><%= session.displayed_location %></td>
       <td>
-        <%= link_to 'Show', pairing_session %> |
-        <%= link_to 'Edit', edit_pairing_session_path(pairing_session) %> |
-        <%= link_to 'Delete', pairing_session, :confirm => 'Are you sure?', :method => :delete %>
+        <ul>
+          <li><%= link_to 'Show', session %></li>
+          <% if session.owner_id == current_user.id %>
+            <li><%= link_to 'Edit', edit_pairing_session_path(session) %></li>
+            <li><%= link_to 'Delete', session, :confirm => 'Are you sure?', :method => :delete %></li>
+          <% else %>
+            <%# TODO: Is this necessary? %>
+            <% session.pair_id = current_user.id %>
+            <li><%= button_to "Sorry, gotta cancel.", remove_pair_from_pairing_session_path(session), {:method => :put} %></li>
+          <% end %>
+        </ul>
       </td>
     </tr>
   <% end %>
 </table>
-
-<h2>Sessions I am pairing on</h2>
-
-<table id="paired_sessions">
+ 
+<h2>My open sessions</h2>
+ 
+<table id="my_open_pairing_sessions">
   <tr>
-    <th>Session Owner</th>
     <th>Start time</th>
     <th>End time</th>
     <th>Description</th>
     <th>Location</th>
-    <th>Actions</th>
+    <th></th>
   </tr>
-  <% @sessions_user_is_pairing_on.each do |pairing_session| %>
+  <% @my_open_pairing_sessions.each do |session| %>
     <tr>
-      <td><%= pairing_session.owner.email %></td>
-      <td><%= pairing_session.start_at %> </td>
-      <td><%= pairing_session.end_at %></td>
-      <td><%= pairing_session.description %></td>
-      <td><%= pairing_session.location_detail.presence || pairing_session.location.try(:raw_location) %></td>
-      <%# TODO: Is this necessary? %>
-      <% pairing_session.pair_id = current_user.id %>
-      <td><%= button_to "Sorry, gotta cancel.", remove_pair_from_pairing_session_path(pairing_session), {:method => :put} %></td>
+      <td><%= session.start_at %> </td>
+      <td><%= session.end_at %></td>
+      <td><%= session.description %></td>
+      <td><%= session.displayed_location %></td>
+      <td>
+        <ul>
+          <li><%= link_to 'Show', session %></li>
+          <li><%= link_to 'Edit', edit_pairing_session_path(session) %></li>
+          <li><%= link_to 'Delete', session, :confirm => 'Are you sure?', :method => :delete %></li>
+        </ul>
+      </td>
     </tr>
   <% end %>
 </table>
-
-<h2>Pairing sessions that I can pair on</h2>
-
+ 
+<h2>Available pairing sessions</h2>
+ 
 <%= form_tag(search_pairing_sessions_path, :id => "pairing_sessions_form", :method => :get) do %>
   Showing pairing sessions
   <%= select_tag 'radius', options_for_select([10, 20, 30, 40, 50], current_radius) %>
@@ -63,24 +73,31 @@
   <%= text_field_tag 'location', current_city %>
   <%= submit_tag "Update list" %>
 <% end %>
-
+ 
 <table id="available_pairing_sessions">
   <tr>
     <th>Start time</th>
     <th>End time</th>
     <th>Description</th>
     <th>Location</th>
-    <th>Actions</th>
+    <th></th>
   </tr>
-  <% @available_pairing_sessions.each do |pairing_session| %>
+  <% @available_pairing_sessions.each do |session| %>
     <tr>
-      <td><%= pairing_session.start_at %> </td>
-      <td><%= pairing_session.end_at %></td>
-      <td><%= pairing_session.description %></td>
-      <td><%= pairing_session.location_detail.presence || pairing_session.location.try(:raw_location) %></td>
-      <%# TODO: Is this necessary? %>
-      <% pairing_session.pair_id = current_user.id %>
-      <td><%= button_to "I'll pair on this!", set_pair_on_pairing_session_path(pairing_session), {:method => :put} %></td>
+      <td><%= session.start_at %> </td>
+      <td><%= session.end_at %></td>
+      <td><%= session.description %></td>
+      <td><%= session.displayed_location %></td>
+      <td>
+        <ul>
+          <li><%= link_to 'Show', session %></li>
+          <li>
+            <%# TODO: Is this necessary? %>
+            <% session.pair_id = current_user.id %>
+            <%= button_to "I'll pair on this!", set_pair_on_pairing_session_path(session), {:method => :put} %>
+          </li>
+        </ul>
+      </td>
     </tr>
   <% end %>
 </table>

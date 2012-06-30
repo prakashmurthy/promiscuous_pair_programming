@@ -8,6 +8,10 @@ rescue LoadError => e
 end
 
 Spork.prefork do
+  # Block routes from reloading, since this references models (such as User)
+  # that we want to be able to reload
+  Spork.trap_method(Rails::Application, :reload_routes!) if defined?(Rails)
+  
   ENV["RAILS_ENV"] ||= 'test'
   require File.expand_path("../../config/environment", __FILE__)
   require 'rspec/rails'
@@ -31,10 +35,6 @@ Spork.prefork do
     # instead of true.
     config.use_transactional_fixtures = true
   end
-  
-  # Block routes from reloading, since this references models (such as User)
-  # that we want to be able to reload
-  Spork.trap_method(Rails::Application, :reload_routes!)
 end
 
 Spork.each_run do

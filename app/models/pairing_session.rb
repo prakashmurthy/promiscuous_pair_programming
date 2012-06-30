@@ -11,17 +11,38 @@ class PairingSession < ActiveRecord::Base
 
   validate :pair_is_not_owner
   
-  # Ensure this is listed after existing validations so the validation this introduces goes last
+  # If a pairing session is saved with :enable_geocoding => true,
+  # the raw_location will be run through the Google Maps API, resulting in a
+  # Location record which will be tied to the pairing session via location_id.
+  #
+  # (Please list this after existing validations so the validation this
+  # introduces goes last.)
+  #
   include PPP::ModelMixins::Geocoding
   auto_geocode_location
 
-  default_scope order(:start_at)
-
-  scope :upcoming, lambda { where("pairing_sessions.start_at >= ?", Time.zone.now) }
-  scope :not_owned_by, lambda {|user| where('owner_id != ?', user.id) }
-  scope :without_pair, where('pair_id IS NULL')
-  # Have to wrap this in a lambda since .upcoming depends on the current time
-  scope :available, lambda { upcoming.without_pair }
+  scope :upcoming, lambda { where(:start_at.gte => Time.now.utc) }
+  scope :not_owned_by, lambda {|user| where(:owner_id.ne => user.id) }
+  scope :without_pair, where(:pair_id => nil)
+  scope :location_scoped, lambda {|options|
+    geo_scope(:within => options[:distance], :origin => options[:around].coordinates).
+    includes(:location)
+  }
+  scope :involving, lambda {|user|
+    where({:owner_id.eq => user.id, :pair_id.ne => nil} | {:pair_id.eq => user.id})
+  }
+  
+  # Compound scopes
+  scope :available, lambda { upcoming.without_pair }  # have to wrap this in a lambda since .upcoming depends on the current time
+  scope :available_to, lambda {|user| available.not_owned_by(user) }
+  
+  def partner_of(user)
+    owner_id == user.id ? pair : owner
+  end
+  
+  def displayed_location
+    location_detail.presence || location.try(:raw_location)
+  end
 
 private
   def starts_in_future
