@@ -5,6 +5,21 @@ Given(/^#{capture_model} exists?(?: with #{capture_fields})?$/) do |name, fields
   create_model(name, fields)
 end
 
+def create_model_with_factory(pickle_ref, factory_name)
+  _, label = *parse_model(pickle_ref)
+  raise ArgumentError, "Can't create with an ordinal (e.g. 1st user)" if label.is_a?(Integer)
+  #fields = fields.is_a?(Hash) ? parse_hash(fields) : parse_fields(fields)
+  fields = {}
+  factory = pickle_config.factories[factory_name] or raise "Couldn't find factory '#{factory_name}'!"
+  record = factory.create(fields)
+  store_model(factory, label, record)
+  record
+end
+
+Given /^#{capture_model} exists using the "([^"]*)" factory$/ do |pickle_ref, factory|
+  create_model_with_factory(pickle_ref, factory)
+end
+
 # create n models
 Given(/^(\d+) #{capture_plural_factory} exist(?: with #{capture_fields})?$/) do |count, plural_factory, fields|
   count.to_i.times { create_model(plural_factory.singularize, fields) }

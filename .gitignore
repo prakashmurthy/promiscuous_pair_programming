@@ -6,3 +6,4 @@ tmp/**/*
 .idea/
 *.tmproj
 rerun.txt
+lib/tasks/local.rake

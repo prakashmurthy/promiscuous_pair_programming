@@ -10,12 +10,12 @@ module HtmlSelectorsHelpers
 
       when /the page/
         "html > body"
-      when /my pairing sessions/
-        '#my_pairing_sessions'
+      when /my involved pairing sessions/
+        '#my_involved_pairing_sessions'
+      when /my open pairing sessions/
+        '#my_open_pairing_sessions'
       when /available pairing sessions/
         '#available_pairing_sessions'
-      when /sessions I am pairing on/
-        '#paired_sessions'
       when /the account management section/
         "#account_management"
       when /the navigation/
